@@ -85,7 +85,8 @@
         if (!localStorage.getItem('userBalance')) {
             localStorage.setItem('userBalance', '5000');
         }
-        window.location.href = 'main.html';
+        // [수정] 이동할 페이지를 main.html로 변경
+        window.location.href = 'main.html'; 
       } else {
         alert('닉네임을 입력해주세요.');
       }
