@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>INCO - 받은 메일함</title>
+  <style>
+    /* 기본 스타일 초기화 */
+    body, h1, h2, ul, li { margin: 0; padding: 0; font-family: 'Helvetica Neue', sans-serif; }
+    body { background-color: #f7f8fa; color: #202124; }
+    li { list-style: none; }
+    a { text-decoration: none; color: inherit; display: block; }
+
+    /* 전체 레이아웃 */
+    .container { max-width: 1280px; margin: 0 auto; }
+
+    /* 헤더 */
+    header {
+      background: #202124;
+      color: #fff;
+      padding: 16px 24px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    header a { cursor: pointer; display: inline; }
+
+    /* 메인 콘텐츠 */
+    .main-content {
+      display: flex;
+      gap: 24px;
+      padding: 24px;
+      margin-top: 20px;
+    }
+
+    /* 사이드 메뉴 */
+    .side-nav {
+      width: 200px;
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.05);
+      height: fit-content;
+    }
+    .side-nav h2 { font-size: 16px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #eee; }
+    .side-nav ul li {
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .side-nav ul li.active {
+      background-color: #e8f0fe;
+      color: #1967d2;
+    }
+
+    /* 메일 목록 영역 */
+    .mail-container {
+      flex: 1;
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.05);
+    }
+    .mail-header {
+      font-size: 22px;
+      font-weight: 700;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #ddd;
+    }
+    .mail-list li {
+      padding: 18px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .mail-list a:hover li { background-color: #f9f9f9; }
+    .mail-list li:last-child { border-bottom: none; }
+
+    .mail-subject { font-size: 15px; font-weight: 600; margin-bottom: 4px; display: block; }
+    .mail-preview { font-size: 14px; color: #666; }
+    .mail-empty { padding: 80px 0; text-align: center; color: #888; font-size: 15px; cursor: default; }
+
+    /* 읽지 않은 메일 스타일 */
+    .unread .mail-subject { font-weight: 800; color: #111; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <a href="index.html">INCO</a>
+    </header>
+    <div class="main-content">
+      <nav class="side-nav">
+        <h2>메일함</h2>
+        <ul>
+          <li class="active">📧 받은 편지함</li>
+          <li>📤 보낸 편지함</li>
+          <li>🗑️ 휴지통</li>
+        </ul>
+      </nav>
+      <main class="mail-container">
+        <div class="mail-header">받은 편지함</div>
+        <ul id="mail-list" class="mail-list"></ul>
+      </main>
+    </div>
+  </div>
+
+  <script>
+    // 기본 메일(SDA) 추가 로직
+    const addDefaultMails = () => {
+      const allMails = JSON.parse(localStorage.getItem('incoMails') || '[]');
+      // 제목을 더 구체적인 것으로 확인해야, 나중에 mail-view에서 바꾼 제목과 일치합니다.
+      const sdaMailExists = allMails.some(m => m.subject.includes('탐사대원 채용'));
+
+      if (!sdaMailExists) {
+        allMails.push({
+          subject: '[SDA] 탐사대원 채용 최종 합격 안내',
+          preview: '인류의 새로운 터전, ARC-7ζ(세라프)의 미래를 함께 개척할 동료가 되신 것을 환영합니다.',
+          timestamp: new Date('2025-05-20T10:00:00').getTime(),
+          read: true // 기본 메일은 '읽음' 상태로 시작
+        });
+        localStorage.setItem('incoMails', JSON.stringify(allMails));
+      }
+    };
+
+    // 메일 목록을 렌더링하는 함수
+    const renderMails = () => {
+      const mailListElem = document.getElementById('mail-list');
+      let allMails = JSON.parse(localStorage.getItem('incoMails') || '[]');
+      allMails.sort((a, b) => b.timestamp - a.timestamp);
+
+      if (allMails.length === 0) {
+        mailListElem.innerHTML = `<li class="mail-empty">받은 메일이 없습니다.</li>`;
+      } else {
+        mailListElem.innerHTML = '';
+        allMails.forEach(mail => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = `mail-view.html?id=${mail.timestamp}`;
+          
+          if (!mail.read) {
+            li.classList.add('unread');
+          }
+          li.innerHTML = `<span class="mail-subject">${mail.subject}</span><span class="mail-preview">${mail.preview}</span>`;
+          a.appendChild(li);
+          mailListElem.appendChild(a);
+        });
+      }
+    };
+
+    addDefaultMails();
+    renderMails();
+  </script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>지성체, 그것에 대한 진실은 - INCO 뉴스</title>
+  <style>
+    body { margin:0; background:#f0f2f5; font-family:'Helvetica Neue', sans-serif; color:#212529; transition: background-color 0.3s ease; }
+    a { text-decoration: none; color: inherit; }
+    header { background:#202124; font-size:24px; font-weight:bold; }
+    header a { display: block; padding: 16px 24px; color:#fff; }
+    
+    .article-container { max-width: 800px; margin: 32px auto; background: #fff; padding: 32px 40px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.08); transition: all 0.3s ease; }
+    .article-header h1 { font-size: 32px; margin-top: 0; line-height: 1.4; }
+    .article-meta { font-size: 14px; color: #6c757d; border-bottom: 1px solid #dee2e6; padding-bottom: 16px; margin-bottom: 24px; }
+    
+    .article-body { font-family: 'Georgia', serif; font-size: 17px; line-height: 1.9; }
+    .article-body p { margin-bottom: 1.5em; }
+
+    .deleted-message {
+        color: #d33;
+        text-align: center;
+        font-weight: bold;
+    }
+  </style>
+</head>
+<body id="page-body">
+  <header><a href="index.html">INCO</a></header>
+
+  <div class="article-container" id="article-box">
+    <div class="article-header">
+      <h1>지성체, 그것에 대한 진실은</h1>
+      <div class="article-meta">세라프 타임즈 [심층취재]</div>
+    </div>
+    <div class="article-body" id="article-body">
+        <p>지성체는 인간이 이해할 수 없는 사고 체계와 존재 방식을 가진 초월적 개체다. 그들은 인간에게 적대적이지 않다. 오히려 일정한 거리를 두고 관찰하며 흥미를 느끼는 존재로 보인다.</p>
+        <p>그들에게 인간은 위협이 아닌 아직 완성되지 않은 존재이며, 언젠가 자신들과 같은 모습으로 도달할 수 있을지도 모른다는 막연한 가능성의 희망이다.</p>
+        <p>지성체가 모습을 드러내지 않는다. 대부분의 시간 동안 그들은 인간의 시야에 포착되지 않으며 출현 빈도는 극히 낮다. 지성체가 모습을 드러내지 않는 것 자체가 인간에게는 오히려 축복이다.</p>
+    </div>
+  </div>
+
+  <script>
+    window.onload = () => {
+        const body = document.getElementById('page-body');
+        const articleBox = document.getElementById('article-box');
+        const articleBody = document.getElementById('article-body');
+        
+        // 스크립트 실행 전, articleBody가 존재하는지 확인
+        if (!articleBody) return;
+
+        const originalText = articleBody.innerHTML;
+        const chars = '*&#%$!<>[]{}?/|';
+
+        // 텍스트를 무작위 기호로 바꾸는 함수
+        const scramble = () => {
+            const textArray = originalText.split('');
+            const scrambled = textArray.map(char => {
+                if (char.trim() === '') return char;
+                return Math.random() > 0.1 ? chars[Math.floor(Math.random() * chars.length)] : char;
+            }).join('');
+            articleBody.innerHTML = scrambled;
+        };
+
+        // 0.2초 후 연출 시작
+        setTimeout(() => {
+            body.style.backgroundColor = '#000';
+            articleBox.style.backgroundColor = '#000';
+            articleBox.style.color = '#e0e0e0';
+            
+            const scrambleInterval = setInterval(scramble, 50);
+
+            // 1초 후에 모든 연출을 끝내고 삭제 처리
+            setTimeout(() => {
+                clearInterval(scrambleInterval); 
+
+                articleBox.innerHTML = '<h1 class="deleted-message">[이 기사는 SDA의 요청으로 삭제되었습니다.]</h1>';
+                
+                let allNews = JSON.parse(localStorage.getItem('incoNews') || '[]');
+                allNews = allNews.filter(news => news.id !== 'news005');
+                localStorage.setItem('incoNews', JSON.stringify(allNews));
+
+                alert("비정상적인 접근이 감지되었습니다. 기사 목록으로 돌아갑니다.");
+                window.location.href = 'news.html';
+
+            }, 1000); 
+
+        }, 200); 
+    };
+  </script>
+</body>
+</html>

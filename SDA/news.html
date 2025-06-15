@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>INCO 뉴스</title>
+  <style>
+    body { margin:0; background:#f0f2f5; font-family:'Helvetica Neue', sans-serif; color:#212529; }
+    .container { max-width:1100px; margin:0 auto; padding: 24px; }
+    a { text-decoration: none; color: inherit; }
+    header { background:#202124; font-size:24px; font-weight:bold; }
+    header a { display: block; padding: 16px 24px; color:#fff; }
+    .news-header { padding: 32px 0; text-align: center; border-bottom: 1px solid #dee2e6; margin-bottom: 32px; }
+    .news-header h1 { font-size: 40px; margin: 0; color: #007bff; }
+    .news-section { margin-bottom: 48px; }
+    .news-section h2 { font-size: 24px; border-bottom: 2px solid #343a40; padding-bottom: 12px; margin-bottom: 24px; }
+    .article-list { list-style: none; padding: 0; margin: 0; }
+    .article-item { display: block; background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 16px; transition: box-shadow .2s ease; }
+    .article-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .article-text .category { display: block; font-size: 13px; font-weight: 600; color: #007bff; margin-bottom: 8px; }
+    .article-text h3 { font-size: 20px; margin: 0 0 8px 0; }
+    .article-text p { font-size: 15px; color: #495057; margin: 0; }
+    footer { border-top: 1px solid #dee2e6; padding:24px 0; margin-top:60px; }
+    .footer-content { max-width:1280px; margin:0 auto; padding:0 24px; font-size:13px; color:#495057; text-align: center; }
+  </style>
+</head>
+<body>
+  <header><a href="index.html">INCO</a></header>
+  <div class="container">
+    <div class="news-header">
+      <h1>INCO NEWS</h1>
+    </div>
+    <section class="news-section">
+      <h2>최신 뉴스</h2>
+      <ul class="article-list" id="latest-news-list"></ul>
+    </section>
+    <section class="news-section">
+      <h2>과거 주요 뉴스</h2>
+      <ul class="article-list" id="past-news-list"></ul>
+    </section>
+  </div>
+  <footer>
+    <div class="footer-content">© 2025 INCO Corp. All rights reserved.</div>
+  </footer>
+
+  <script>
+    const initialNews = [
+        { id: 'news001', file: 'news-article-rescue.html', headline: '경계 지역 생존자 구조 작전 재개', source: 'SDA 공식 발표', summary: 'SDA는 금일 오전, 위험 구역 A-13 인근에서 중단되었던 민간인 구조 작전을 2일 만에 재개한다고 발표했습니다.' },
+        { id: 'news002', file: 'article_leak_report.html', headline: '감염자 치료제 3차 보고서 유출', source: '세라프 타임즈', summary: 'SDA 의학 연구 부서의 3차 치료제 임상실험 보고서가 외부로 유출된 정황이 포착되어 내부 감사에 착수했습니다.' },
+        { id: 'news003', file: 'news-article-wall.html', headline: '개발 구역 D-2 방어벽 증설 완료', source: 'SDA 개발 부서', summary: '크리처의 위협으로부터 개발 구역을 보호하기 위한 D-2 구역의 3차 방어벽 증설이 성공적으로 완료되었습니다.' },
+        { id: 'news004', file: 'news-article-agentB.html', headline: '실종 조사원 B, 생존 상태로 확인', source: 'INCO 통신', summary: '지난 4일간 연락이 두절되었던 베테랑 조사원 B씨가 경계 지역 동굴에서 생존 상태로 발견되어 구조되었습니다.' },
+        { id: 'dylan01', file: 'news-article-dylan.html', headline: '신도시의 비극, 그 후... 딜런 브룩스, 논란의 중심에 서다', source: '사회', summary: '개발 구역 신도시에서 발생한 대규모 감염 사태의 현장 지휘관, 딜런 브룩스를 둘러싼 논란이 계속되고 있습니다.' },
+        { id: 'news005', file: 'article_sentient_being.html', headline: '지성체, 그것에 대한 진실은', source: '심층취재', summary: '최근 ORINET 등지에서 소문으로만 떠돌던 \'대화 가능한 지성체 크리처\'의 존재. SDA는 공식 입장을 내놓지 않고 있습니다.' }
+    ];
+
+    window.onload = () => {
+        // incoNews 데이터가 없으면 초기 데이터로 세팅 (삭제된 기사는 복구되지 않음)
+        if (!localStorage.getItem('incoNews')) {
+            localStorage.setItem('incoNews', JSON.stringify(initialNews));
+        }
+
+        const allNews = JSON.parse(localStorage.getItem('incoNews'));
+        
+        const latestNewsList = document.getElementById('latest-news-list');
+        const pastNewsList = document.getElementById('past-news-list');
+
+        latestNewsList.innerHTML = '';
+        pastNewsList.innerHTML = '';
+        
+        const createNewsItemHTML = (article) => {
+            return `
+                <li>
+                  <a href="${article.file}" class="article-item">
+                    <div class="article-text">
+                      <span class="category">${article.source}</span>
+                      <h3>${article.headline}</h3>
+                      <p>${article.summary}</p>
+                    </div>
+                  </a>
+                </li>
+            `;
+        };
+        
+        allNews.forEach(article => {
+            if (article.id === 'dylan01' || article.id === 'news005') {
+                pastNewsList.innerHTML += createNewsItemHTML(article);
+            } else {
+                latestNewsList.innerHTML += createNewsItemHTML(article);
+            }
+        });
+    };
+  </script>
+</body>
+</html>

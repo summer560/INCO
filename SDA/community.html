@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>ORINET 커뮤니티 - 게시판</title>
+  <style>
+    body { margin:0; background:#121212; font-family:'Helvetica Neue', sans-serif; color:#e0e0e0; }
+    .container { max-width:1000px; margin:0 auto; padding: 24px; }
+    a { text-decoration: none; color: inherit; }
+    header { background:#202124; font-size:24px; font-weight:bold; }
+    header a { display: block; padding: 16px 24px; color:#fff; }
+    .community-header { padding-bottom: 20px; border-bottom: 2px solid #ffc107; margin-bottom: 24px; text-align: center; }
+    .community-header h1 { font-size: 32px; color: #fff; margin: 0; }
+    .community-header p { font-size: 15px; color: #adb5bd; margin: 4px 0 0; }
+    .board-table { width: 100%; border-collapse: collapse; background-color: #1e1e1e; border-radius: 8px; overflow: hidden; }
+    .board-table th, .board-table td { padding: 14px 16px; text-align: left; border-bottom: 1px solid #333; font-size: 14px; }
+    .board-table thead { background-color: #2a2a2a; color: #adb5bd; }
+    .board-table tbody tr:hover { background-color: #2c2c2c; }
+    .board-table .col-category { width: 10%; text-align: center; color: #868e96;}
+    .board-table .col-title { width: 65%; }
+    .board-table .col-author { width: 15%; text-align: center; }
+    .board-table .col-views { width: 10%; text-align: center; color: #868e96; }
+    .board-table .post-title a { font-weight: 500; }
+    .board-table .post-title a:hover { text-decoration: underline; }
+    .new-badge { display: inline-block; margin-left: 8px; width: 18px; height: 18px; line-height: 18px; text-align: center; font-size: 11px; font-weight: bold; color: #121212; background-color: #ffc107; border-radius: 4px; vertical-align: middle; }
+    .pagination { display: flex; justify-content: center; align-items: center; margin-top: 32px; gap: 8px; }
+    .pagination a, .pagination strong { color: #e0e0e0; padding: 8px 14px; border-radius: 6px; font-size: 14px; font-weight: 600; }
+    .pagination a:hover { background-color: #2a2a2a; }
+    .pagination strong { background-color: #ffc107; color: #121212; }
+    footer { border-top: 1px solid #333; padding:24px 0; margin-top:60px; }
+    .footer-content { max-width:1280px; margin:0 auto; padding:0 24px; font-size:13px; color:#868e96; text-align: center; }
+  </style>
+</head>
+<body>
+  <header><a href="index.html">INCO</a></header>
+  <div class="container">
+    <div class="community-header">
+      <h1>ORINET</h1>
+      <p>보이는 것이 전부가 아니다.</p>
+    </div>
+    <table class="board-table">
+      <thead>
+        <tr>
+          <th class="col-category">분류</th>
+          <th class="col-title">제목</th>
+          <th class="col-author">작성자</th>
+          <th class="col-views">조회</th>
+        </tr>
+      </thead>
+      <tbody id="board-body"></tbody>
+    </table>
+    <div class="pagination">
+        <a href="#">&laquo;</a>
+        <strong>1</strong>
+        <a href="#">2</a>
+        <a href="#">3</a>
+        <a href="#">4</a>
+        <a href="#">5</a>
+        <a href="#">&raquo;</a>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-content">© 2025 INCO Corp. All rights reserved.</div>
+  </footer>
+
+  <script>
+    const initialPosts = [
+            { 
+            id: 7, 
+            category: '[게임]', 
+            title: '프로젝트: 세라프 해본 사람?', 
+            author: 'Gamer', 
+            views: 1253, 
+            isNew: true, 
+            content: "INCO에서 직접 만든 탐사 시뮬레이터라던데, 여기 게임 산업도 할 모양인가봄.\n사전예약 보상으로 받은 테스트 코드로 해본 사람 있나요? 후기 좀...", 
+            comments: [
+                {id: 701, author: '세라프탐사원1', text: '그거 테스트 서버, 사전예약한 사람한테만 코드를 준대요. 저도 해보고 싶네요ㅠㅠ'},
+                {id: 702, author: '게임중독자', text: '실제 전투 부서 대원들이랑 같이 싸울 수 있게 만들었다는데? ㅋㅋㅋ 완전 기대됨'},
+                {id: 703, author: '불만꾼', text: '딜런이나 애쉬 같은 실존 인물들 나오던데, 허락은 받은 거임? ㅋㅋ 초상권 문제 있을 듯.'},
+                {id: 704, author: '세라프의진실', text: 'INCO랑 SDA랑 뭔가 있는 게 틀림없음. 이런 걸로 여론 조작하려는 거 아닌가?', replies: [
+                    {id: 7041, author: '냥냥펀치', replyTo: '세라프의진실', text: '또 시작이네 이 사람은... 그냥 게임은 게임으로 즐겨요 좀.'}
+                ]},
+                {id: 705, author: '거대흑성', text: 'SDA한테 돈 받았겠지 뭐 ㅋㅋㅋ'}
+            ] 
+        },
+        { 
+            id: 1, 
+            category: '[모집]', 
+            title: '위험 구역 탐험할 사람 모집합니다.', 
+            author: 'DangerChaser', 
+            views: 158, 
+            isNew: true, 
+            content: "최근 위험 구역에서 인간과 대화가 가능한 지성체 크리처가 있다는 소문을 들었습니다.\nSDA는 이 정보를 통제하고 있는 것 같고, 저는 이게 사실인지 직접 확인해보고 싶습니다.\n\n비공식적으로 경계 지역 너머의 미탐사 구역을 탐사할 팀원을 모집합니다.\n전문적인 전투 능력보다는 생존 및 탐사 경험이 있는 분을 우대합니다. 모든 장비와 수익은 1/N.\n\n<div class='recruitment-notice'><h3>- 지성체 크리처 탐사대원 긴급 모집 -</h3><strong>[목표]</strong> 미확인 지성체 크리처 조우 및 기록\n<strong>[자격]</strong> 생존 경험자 우대. 입 무거운 분 환영.\n<strong>[기간]</strong> 1주 내외.\n<strong>[경고]</strong> 비공식 작전. SDA 지원 및 신변 보장 불가.\n<strong>[문의]</strong> ORINET ID: DangerChaser</div>", 
+            comments: [
+                { id: 101, author: '먹다남은식빵', text: '지성체 크리처요? 그거 그냥 도시전설 아니었나요? 위험할 텐데요.', replies: [{id: 1011, author: 'DangerChaser', replyTo: '먹다남은식빵', text: '도시전설인지 직접 확인해보려는 겁니다. 그래서 용감한 분을 찾고 있고요.'}]},
+                { id: 102, author: 'Pioneer', text: '흥미롭네요. 대화 가능한 크리처라니... 인류의 미래가 바뀔 수도 있겠군요. 쪽지 드렸습니다.', replies: []},
+                { id: 103, author: '꼬다리', text: '가서 X-27 바이러스나 감염되지 마세요. 목숨은 하나입니다.', replies: []},
+                { id: 104, author: 'SDA 전 직원', text: '미친 짓이니까 그만둬요. 지성체가 실존하는 것도 사실이고, SDA에서는 지성체를 사살한 적도 있습니다. 그때 전투 부서 2팀은 전멸했어요. 그것은 일반 크리처와는 격이 다릅니다. 마주할 생각 자체를 하지 마세요.', replies: []}
+            ] 
+        },
+        { 
+            id: 6, 
+            category: '[후기]', 
+            title: 'SDA 전투 부서 면접 후기', 
+            author: 'SDA_Aspirant', 
+            views: 9812, 
+            isNew: false,
+            content: "오늘 오전에 SDA 전투 부서 인턴 면접 보고 왔습니다ㅋㅋㅋ 생각보다 압박 면접이 심하네용 ㄷㄷ 특히 그 짝눈이신 면접관님? 이분은 전투 부서 직원이신 거 같은데 질문할때마다 쫄렸...ㅋㅋ 공통적으로 신도시 사태에 대한 견해를 집요하게 물어보더라구용.\n\n가장 기억에 남는 질문은 '당신이 딜런 브룩스의 상황이었다면 어떻게 했을 것인가?' 였습니다.\n\n앞으로 지원하실 분들은 참고하세요! 질문 있으시면 댓글 주세요.", 
+            comments: [
+                {id: 601, author: 'SDA 명예 직원', text: '저도 그 질문 받았습니다. 답변하기 정말 까다롭더군요.'},
+                {id: 602, author: '인턴', text: '아 그분 렌 부사관님일 걸요? 눈 색이 다른 이유가 한쪽 눈이 의안이라서 그렇대요. 엄청 빡빡해 보여도 은근히 잘 챙겨주시는 분입니다.', replies: [{id: 6021, author: 'SDA_Aspirant', replyTo: '인턴', text: '헐, 진짜요? 어쩐지 눈빛이 장난 아니시더라... 의안이었다니 ㄷㄷ 좋은 정보 감사합니다!'}]},
+                {id: 603, author: 'Hopeful', text: '후기 감사합니다! 저도 다음 주에 면접 보러 가는데... 엄청 떨리네요.'},
+                {id: 604, author: '어그로', text: '어차피 면접 다 내정자 있는 거 아닌가요?'},
+            ] 
+        },
+        { 
+            id: 5, 
+            category: '[토론]', 
+            title: 'SDA에게 너무 큰 권력을 쥐어줌', 
+            author: '세라프의진실', 
+            views: 11830, 
+            isNew: false, 
+            content: "딜런 브룩스 사태만 봐도 알 수 있습니다. SDA는 행정, 군사, 사법권을 모두 독점하고 있습니다. 시민을 보호한다는 명분 아래 그들의 권력은 무소불위가 되었고, 이제는 누구도 그들을 견제할 수 없습니다.\n\n통제되지 않는 권력은 반드시 부패합니다. 우리 시민들이 직접 목소리를 내야 할 때입니다.", 
+            comments: [
+                {id: 501, author: '포테이토칩', text: '목소리 내면 어떻게 되는데요? 끌려가서 조사받겠죠.'}, 
+                {id: 502, author: '가다랑이포', text: '그래도 SDA가 없으면 우리 모두 크리처 밥이 됐을 겁니다. 희생은 어쩔 수 없는 거라고 생각해요.'},
+                // [신규] 댓글 및 답글 추가
+                {id: 503, author: 'Newbie', text: '저기... 딜런 브룩스 사태가 뭔가요? 다들 아는 것 같은데 저만 모르는 듯...', replies: [
+                    {id: 5031, author: 'Citizen_K', replyTo: 'Newbie', text: "헐ㅋㅋㅋ 이 사건 모름? 워낙 유명해서... 아래 뉴스 링크 참고하세요.\n<a href='news-article-dylan.html' target='_blank'>→ [세라프 타임즈] 신도시의 비극, 그 후... 딜런 브룩스, 논란의 중심에 서다</a>"}
+                ]}
+            ]
+        },
+        { 
+            id: 4, 
+            category: '[영상]', 
+            title: '전투 부서 팀장님 실물 영접함', 
+            author: '이 구역 금사빠', 
+            views: 774, 
+            isNew: false, 
+            content: "애쉬 리드포드라고 하는데 이름도 멋있음, ㅋㅋ 애기 구해주는 영상 찍었다. 혹시 결혼하셨을까? ㅋㅋㅋ", 
+            comments: [
+                {id: 401, author: '두부', text: '이 분 아마 자식 있으실걸요?'},
+                {id: 402, author: '아몰랑', text: '그건 모르지'},
+                {id: 403, author: '고농축 레드와인', text: '이런 거 함부로 올리시면 위험합니다. 글 내리시는 게...'}
+            ]
+        },
+   { 
+            id: 3, 
+            category: '[역사]', 
+            title: '멸망한 지구라는 행성', 
+            author: 'Old_Timer', 
+            views: 3109, 
+            isNew: false, 
+            content: "요즘 '지구'라는 행성에 대한 옛 기록들을 찾아보고 있습니다. 900년 전 대멸망 이전에는 지금처럼 모든 것이 통제되지 않았다고 하네요.\n\n기록에 따르면 '한국', '미국', '일본' 같은 수많은 국가들이 있었고, 서로 다른 언어와 문화를 가지고 있었다고 합니다. 지금은 상상도 할 수 없는 일이죠.\n\n우리가 잃어버린 자유에 대한 기록입니다.", 
+            comments: [
+                {id: 301, author: '뿌슝', text: '돌아가긴 어딜 돌아가요ㅋㅋㅋㅋ 여기서 잘 살 생각 해야지'},
+                {id: 302, author: 'Pioneer', text: '옛날엔 \'여행\'이라는 걸 자유롭게 다녔다는데... 지금은 안전 구역 밖으로 한 발짝 나가는 것도 어려운데 말이죠. 부럽네요.', replies: [
+                    {id: 3021, author: '프로불만러', replyTo: 'Pioneer', text: '이거 개발 구역이랑 경계 지역 사는 사람 기만하는 글 아님? ㅋㅋㅋ'},
+                    {id: 3022, author: 'Pioneer', replyTo: '프로불만러', text: '그런 뜻이 아니었는데... 그냥 순수하게 부러워서 한 말에 웬 시비신지;'}
+                ]},
+                {id: 303, author: 'SZ', text: '어휴... 이런 비생산적인 얘기는 왜 하는 건지. 지금 당장 발등에 떨어진 불부터 끄는 게 현실적이지 않나요?'},
+                {id: 304, author: '기록보관자', text: "기록에 따르면 지구에는 '인터넷'이라는 거대한 정보망이 있어서, 누구나 전 세계의 정보를 실시간으로 볼 수 있었다고 합니다. 지금의 INCO 포털과는 비교도 안 될 규모였죠.", replies: [
+                    {id: 3041, author: 'Old_Timer', replyTo: '기록보관자', text: '정말입니까? 누구나 정보를 볼 수 있었다니... 지금으로선 상상도 안 되네요.'}
+                ]},
+                {id: 306, author: '현실주의자', text: '다들 너무 환상만 가지시네요. 좋았던 시절만 있었던 게 아닙니다. 기록을 보면 \'전쟁\'이라는 걸로 자기들끼리 수없이 죽고 죽였다고 합니다. 어쩌면 인류는 멸망할 만해서 멸망한 걸지도 모릅니다.', replies: [
+                    {id: 3061, author: 'Pioneer', replyTo: '현실주의자', text: '자기들끼리요? 크리처도 없는데 왜...?'},
+                    {id: 3062, author: '뿌슝', replyTo: '현실주의자', text: '이분 말이 맞음. 지금이랑 똑같죠 뭐. 장소만 바뀐 거임 ㅋㅋㅋ'},
+                    {id: 3063, author: 'Old_Timer', replyTo: '현실주의자', text: '그랬던 시절도 있었겠지만, 그게 지구의 전부는 아니었을 겁니다. 모든 것에는 빛과 그림자가 있는 법이니까요.'},
+                    {id: 3064, author: '현실주의자', replyTo: 'Old_Timer', text: '그림자 수준이 아니라 그냥 시궁창이었겠죠. 지금 SDA가 하는 짓 보면 모르시겠어요? 인간의 본성은 변하지 않습니다.'},
+                    {id: 3065, author: 'SDA_Watcher', replyTo: '현실주의자', text: '너무 극단적인 말씀이십니다. 해당 기록의 출처는 명확한가요?'}
+                ]}
+            ] 
+        },
+      { 
+            id: 2, 
+            category: '[영상]', 
+            title: '딜런 브룩스 기자회견 영상', 
+            author: 'Citizen_K', 
+            views: 5420, 
+            isNew: false, 
+            content: "논란의 중심인 딜런 브룩스 기자회견 영상입니다. 저 태도 보세요. 반성하는 기미가 전혀 없네요. 저런 사람한테 경계 지역 순찰을 맡겨도 되는 겁니까? SDA는 대체 무슨 생각인지.",
+            comments: [
+                { id: 118, author: 'PastIsPast', text: '이거 시간도 지난 일이잖아. 이제 좀 지우지? 지금 딜런 브룩스 다시 정상적으로 근무 중임.', replies: []},
+                { id: 104, author: '세라프의진실', text: '이 모든 건 SDA의 꼬리 자르기입니다. 진짜 책임은 사살 명령을 내린 상층부한테 있는데, 일개 병사한테 모든 비난을 돌리고 있잖아요.', replies: [
+                    { id: 1041, author: 'Citizen_K', replyTo: '세라프의진실', text: '저도 그 점이 가장 의심스럽습니다. 그래서 공론화하려고 영상 올린 겁니다.' },
+                    { id: 1042, author: '돌돌이', replyTo: 'Citizen_K', text: '뭐래. 처음부터 비난할 생각으로 올린 거잖아.'},
+                    { id: 1043, author: '참참', replyTo: '세라프의진실', text: '일개 병사? ㅋㅋㅋㅋ 딜런 브룩스가 어디 일개 병사던가? ㅋ이 새끼도 한패임'}
+                ]},
+                { id: 101, author: '레전드일병', text: '제가 전투 부서에서 같이 근무했었는데, 딜런 원래 저런 사람 아닙니다. 신도시 사태 전까진 누구보다 동료를 챙기던 좋은 사람이었어요... 저렇게 망가진 걸 보니 마음이 아프네요.', replies: [
+                    { id: 1011, author: '불꽃주먹', replyTo: '레전드일병', text: '좋았던 과거는 과거일 뿐이죠! 지금 저지른 짓이 중요한 겁니다!' }, 
+                    { id: 1012, author: '레전드일병', replyTo: '불꽃주먹', text: "동감임! 시민을 지켜야 할 군인이 시민을 죽인 게 말이 되냐?!" }
+                ]},
+                { id: 103, author: '안전제일', text: '저런 정신 나간 놈한테 총을 쥐여준 SDA가 문제다. 당장 전투 부서에서 퇴출시켜야 하는 거 아닌가?', replies: [
+                    { id: 1031, author: 'SDA_Watcher', replyTo: '안전제일', text: '그래도 저 사람, 가족이랑 동료를 자기 손으로 처리한 사람입니다. 넥서린 중독이 괜히 된 게 아닐 텐데... 너무 비난만 하진 맙시다.' }
+                ]},
+                { id: 102, author: '복수귀', text: '반성은커녕 ‘분이 풀릴 만큼 때려라’? 저게 사람이 할 소린가? 우리 가족도 그 신도시에 있었습니다. 용서할 수 없어요.', replies: []},
+                { id: 105, author: '내부고발자', text: "딜런 직무 정지 처분 내렸다고 들었는데, 사실상 강제 휴가 보낸 거라는 소문이 있음. 윗선에서 뭔가 숨기는 게 틀림없다.", replies: [
+                    { id: 1051, author: 'SDA_Watcher', replyTo: '내부고발자', text: '정확한 정보 아니면 이런 글 올리지 마세요. 혼란만 가중됩니다.'}
+                ]},
+                { id: 116, author: '냉소주의자', text: '어차피 힘 있는 놈들은 빠져나가겠지. 기자회견도 다 짜고 치는 쇼 아니야?', replies: [] }
+            ]
+        }
+    ];
+
+     localStorage.setItem('orinetPosts', JSON.stringify(initialPosts));
+    const posts = JSON.parse(localStorage.getItem('orinetPosts'));
+    const boardBody = document.getElementById('board-body');
+    posts.forEach(post => {
+        const newBadge = post.isNew ? `<span class="new-badge">N</span>` : '';
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${post.category}</td>
+            <td class="post-title"><a href="post-view.html?id=${post.id}">${post.title}</a>${newBadge}</td>
+            <td align="center">${post.author}</td>
+            <td align="center">${post.views}</td>
+        `;
+        boardBody.appendChild(row);
+    });
+  </script>
+</body>
+</html>
