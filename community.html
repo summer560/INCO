@@ -158,7 +158,7 @@
                     {id: 3021, author: '프로불만러', replyTo: 'Pioneer', text: '이거 개발 구역이랑 경계 지역 사는 사람 기만하는 글 아님? ㅋㅋㅋ'},
                     {id: 3022, author: 'Pioneer', replyTo: '프로불만러', text: '그런 뜻이 아니었는데... 그냥 순수하게 부러워서 한 말에 웬 시비신지;'}
                 ]},
-                {id: 303, author: 'SZ', text: '어휴... 이런 비생산적인 얘기는 왜 하는 건지. 지금 당장 발등에 떨어진 불부터 끄는 게 현실적이지 않나요?'},
+                {id: 303, author: 'S323', text: '어휴... 이런 비생산적인 얘기는 왜 하는 건지. 지금 당장 발등에 떨어진 불부터 끄는 게 현실적이지 않나요?'},
                 {id: 304, author: '기록보관자', text: "기록에 따르면 지구에는 '인터넷'이라는 거대한 정보망이 있어서, 누구나 전 세계의 정보를 실시간으로 볼 수 있었다고 합니다. 지금의 INCO 포털과는 비교도 안 될 규모였죠.", replies: [
                     {id: 3041, author: 'Old_Timer', replyTo: '기록보관자', text: '정말입니까? 누구나 정보를 볼 수 있었다니... 지금으로선 상상도 안 되네요.'}
                 ]},
@@ -202,7 +202,9 @@
         }
     ];
 
-     localStorage.setItem('orinetPosts', JSON.stringify(initialPosts));
+    if (!localStorage.getItem('orinetPosts')) {
+        localStorage.setItem('orinetPosts', JSON.stringify(initialPosts));
+    }
     const posts = JSON.parse(localStorage.getItem('orinetPosts'));
     const boardBody = document.getElementById('board-body');
     posts.forEach(post => {
