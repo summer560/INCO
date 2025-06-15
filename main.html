@@ -297,14 +297,12 @@
   alertBanner.textContent = alertMessages.length > 0 ? alertMessages[Math.floor(Math.random() * alertMessages.length)] : '';
   
   window.onload = () => {
-    const nickname = localStorage.getItem('userNickname');
-    if (!nickname) {
-      window.location.href = 'entry.html';
-      return;
-    }
-    displayProfile(nickname);
-    updateBadge();
-  };
+  const nickname = sessionStorage.getItem('userNickname'); // localStorage -> sessionStorage
+  if (!nickname) {
+    window.location.href = 'index.html';
+    return;
+  }
+};
 
   function updateBadge() {
     const allMails = JSON.parse(localStorage.getItem('incoMails') || '[]');
@@ -340,14 +338,14 @@
   // 로그아웃 기능
   // 로그아웃 및 전체 초기화 기능
   const logoutButton = document.getElementById('logout-button');
-  if(logoutButton) {
-    logoutButton.addEventListener('click', () => {
-        if (confirm("모든 활동 기록(닉네임, 메일, 댓글 등)을 초기화하고 로그아웃하시겠습니까?")) {
-            localStorage.clear();
-            window.location.href = 'index.html'; 
-        }
-    });
-  }
+if(logoutButton) {
+  logoutButton.addEventListener('click', () => {
+    if (confirm("...")) {
+        sessionStorage.clear(); // localStorage -> sessionStorage
+        window.location.href = 'index.html';
+    }
+  });
+}
 </script>
 </body>
 </html>

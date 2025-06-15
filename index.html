@@ -79,16 +79,14 @@
     const entryButton = document.getElementById('entry-button');
 
     entryButton.addEventListener('click', () => {
-      const nickname = nicknameInput.value.trim();
-      if (nickname) {
-        localStorage.setItem('userNickname', nickname);
-        // [수정] 자산 관련 코드 완전히 삭제
-        window.location.href = 'main.html'; 
-      } else {
-        alert('닉네임을 입력해주세요.');
-      }
-    });
-
+  const nickname = nicknameInput.value.trim();
+  if (nickname) {
+    sessionStorage.setItem('userNickname', nickname); // localStorage -> sessionStorage
+    window.location.href = 'main.html'; 
+  } else {
+    alert('닉네임을 입력해주세요.');
+  }
+});
     nicknameInput.addEventListener('keyup', (event) => {
         if (event.key === 'Enter') { 
             entryButton.click();

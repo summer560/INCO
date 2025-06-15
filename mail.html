@@ -107,7 +107,7 @@
     // 기본 메일(SDA) 추가 로직
     const addDefaultMails = () => {
       const allMails = JSON.parse(localStorage.getItem('incoMails') || '[]');
-      const sdaMailExists = allMails.some(m => m.subject.includes('[SDA] 채용'));
+      const sdaMailExists = allMails.some(m => m.subject.includes('[SDA]'));
 
       if (!sdaMailExists) {
         allMails.push({
