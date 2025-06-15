@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>장바구니 - INCO 스토어</title>
+  <style>
+    body { margin:0; background:#f0f2f5; font-family:'Helvetica Neue', sans-serif; color:#212529; }
+    .container { max-width:1100px; margin:0 auto; padding: 24px; }
+    a { text-decoration: none; color: inherit; }
+    header { background:#202124; font-size:24px; font-weight:bold; }
+    header a { display: block; padding: 16px 24px; color:#fff; }
+    .cart-header { padding-bottom: 20px; border-bottom: 2px solid #333; margin-bottom: 24px; }
+    .cart-header h1 { font-size: 32px; margin: 0; }
+    .cart-item { display: flex; align-items: center; background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 16px; }
+    .cart-item img { width: 100px; height: 100px; object-fit: cover; border-radius: 6px; margin-right: 20px; }
+    .cart-item-info { flex-grow: 1; }
+    .cart-item-info h3 { margin: 0 0 8px; }
+    .cart-item-info .price { font-weight: bold; }
+    .cart-item-quantity { display: flex; align-items: center; gap: 8px; }
+    .cart-item-quantity button { width:30px; height:30px; border:1px solid #ccc; background:#fff; cursor:pointer; }
+    .total-price-section { margin-top: 32px; padding: 24px; background: #fff; border-radius: 8px; text-align: right; }
+    .total-price-section strong { font-size: 24px; color: #007bff; }
+    .empty-cart { text-align: center; padding: 80px 0; background: #fff; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <header><a href="main.html">INCO</a></header>
+  <div class="container">
+    <div class="cart-header">
+      <h1>장바구니</h1>
+    </div>
+    <div id="cart-list">
+      </div>
+    <div class="total-price-section">
+      총 주문금액: <strong id="total-price">0 <small>DEL</small></strong>
+    </div>
+  </div>
+  <script>
+    const cartListEl = document.getElementById('cart-list');
+    const totalPriceEl = document.getElementById('total-price');
+    let cartItems = JSON.parse(localStorage.getItem('incoCart') || '[]');
+
+    function renderCart() {
+        if (cartItems.length === 0) {
+            cartListEl.innerHTML = '<div class="empty-cart">장바구니에 담긴 상품이 없습니다.</div>';
+            totalPriceEl.innerHTML = '0 <small>DEL</small>';
+            return;
+        }
+
+        cartListEl.innerHTML = '';
+        let total = 0;
+        cartItems.forEach((item, index) => {
+            const itemEl = document.createElement('div');
+            itemEl.className = 'cart-item';
+            itemEl.innerHTML = `
+                <img src="${item.image}" alt="${item.name}">
+                <div class="cart-item-info">
+                    <h3>${item.name}</h3>
+                    <div class="price">${item.price.toLocaleString()} DEL</div>
+                </div>
+                <div class="cart-item-quantity">
+                    <button onclick="changeQuantity(${index}, -1)">-</button>
+                    <span>${item.quantity}</span>
+                    <button onclick="changeQuantity(${index}, 1)">+</button>
+                </div>
+            `;
+            cartListEl.appendChild(itemEl);
+            total += item.price * item.quantity;
+        });
+
+        totalPriceEl.innerHTML = `${total.toLocaleString()} <small>DEL</small>`;
+    }
+    
+    function changeQuantity(index, amount) {
+        if (cartItems[index].quantity + amount > 0) {
+            cartItems[index].quantity += amount;
+        } else {
+            // 수량이 0이 되면 아이템 삭제
+            cartItems.splice(index, 1);
+        }
+        localStorage.setItem('incoCart', JSON.stringify(cartItems));
+        renderCart();
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>
