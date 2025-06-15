@@ -103,69 +103,50 @@
     </div>
   </div>
 
- <script>
-  // 닉네임과 메일 배지를 화면에 표시하는 함수들을 정의합니다.
-  function displayProfile(nickname) {
-    const profileNameElement = document.querySelector('.user-name');
-    if (profileNameElement) {
-      profileNameElement.textContent = `${nickname}님`;
-    }
-  }
+  <script>
+    // 기본 메일(SDA) 추가 로직
+    const addDefaultMails = () => {
+      const allMails = JSON.parse(localStorage.getItem('incoMails') || '[]');
+      const sdaMailExists = allMails.some(m => m.subject.includes('[SDA]'));
 
-  function updateBadge() {
-    const allMails = JSON.parse(localStorage.getItem('incoMails') || '[]');
-    const unreadMails = allMails.filter(mail => !mail.read);
-    const badge = document.getElementById('mail-badge');
-    if (badge && unreadMails.length > 0) {
-      badge.style.display = 'inline-block';
-      badge.textContent = unreadMails.length;
-    } else if (badge) {
-      badge.style.display = 'none';
-    }
-  }
+      if (!sdaMailExists) {
+        allMails.push({
+          subject: '[SDA] 채용 최종 합격 안내',
+          preview: '인류의 새로운 터전, ARC-7ζ(세라프)의 미래를 함께 개척할 동료가 되신 것을 환영합니다.',
+          timestamp: new Date('2025-05-20T10:00:00').getTime(),
+          read: true // 기본 메일은 '읽음' 상태로 시작
+        });
+        localStorage.setItem('incoMails', JSON.stringify(allMails));
+      }
+    };
 
-  // 페이지가 로드될 때 실행되는 기본 로직입니다.
-  window.onload = () => {
-    const nickname = localStorage.getItem('userNickname');
-    if (!nickname) {
-      // 닉네임이 없으면 로그인 페이지로 이동합니다.
-      window.location.href = 'index.html';
-      return;
-    }
-    // 닉네임이 있으면 화면에 표시하고, 메일 배지를 업데이트합니다.
-    displayProfile(nickname);
-    updateBadge();
-  };
-  
-  // 사전예약 버튼 기능입니다.
-  function reserveNow() {
-    const mails = JSON.parse(localStorage.getItem('incoMails') || '[]');
-    const exists = mails.some(m => m.subject.includes('프로젝트: 세라프'));
-    if (!exists) {
-      mails.unshift({
-        subject: '[INCO] <프로젝트: 세라프> 사전예약 완료 안내',
-        preview: '차세대 행성 탐사 시뮬레이터 사전예약이 완료되었습니다.',
-        timestamp: Date.now(),
-        read: false
-      });
-      localStorage.setItem('incoMails', JSON.stringify(mails));
-      alert('사전예약이 완료되었습니다. 메일이 도착했습니다.');
-      updateBadge();
-    } else {
-      alert('이미 사전예약하셨습니다.');
-    }
-  }
+    // 메일 목록을 렌더링하는 함수
+    const renderMails = () => {
+      const mailListElem = document.getElementById('mail-list');
+      let allMails = JSON.parse(localStorage.getItem('incoMails') || '[]');
+      allMails.sort((a, b) => b.timestamp - a.timestamp);
 
-  // 로그아웃 및 전체 초기화 기능입니다.
-  const logoutButton = document.getElementById('logout-button');
-  if(logoutButton) {
-    logoutButton.addEventListener('click', () => {
-        if (confirm("모든 활동 기록(닉네임, 메일 등)을 초기화하고 로그아웃하시겠습니까?")) {
-            localStorage.clear();
-            window.location.href = 'index.html';
-        }
-    });
-  }
-</script>
+      if (allMails.length === 0) {
+        mailListElem.innerHTML = `<li class="mail-empty">받은 메일이 없습니다.</li>`;
+      } else {
+        mailListElem.innerHTML = '';
+        allMails.forEach(mail => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = `mail-view.html?id=${mail.timestamp}`;
+          
+          if (!mail.read) {
+            li.classList.add('unread');
+          }
+          li.innerHTML = `<span class="mail-subject">${mail.subject}</span><span class="mail-preview">${mail.preview}</span>`;
+          a.appendChild(li);
+          mailListElem.appendChild(a);
+        });
+      }
+    };
+
+    addDefaultMails();
+    renderMails();
+  </script>
 </body>
 </html>
