@@ -82,10 +82,7 @@
       const nickname = nicknameInput.value.trim();
       if (nickname) {
         localStorage.setItem('userNickname', nickname);
-        if (!localStorage.getItem('userBalance')) {
-            localStorage.setItem('userBalance', '5000');
-        }
-        // [수정] 이동할 페이지를 main.html로 변경
+        // [수정] 자산 관련 코드 완전히 삭제
         window.location.href = 'main.html'; 
       } else {
         alert('닉네임을 입력해주세요.');
