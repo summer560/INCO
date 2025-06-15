@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>AI 연산 워크스테이션 - INCO 스토어</title>
+  <style>
+    body { margin:0; background:#f0f2f5; font-family:'Helvetica Neue', sans-serif; color:#212529; }
+    .container { max-width:1100px; margin:0 auto; padding: 24px; }
+    a { text-decoration: none; color: inherit; }
+    header { background:#202124; font-size:24px; font-weight:bold; }
+    header a { display: block; padding: 16px 24px; color:#fff; }
+
+    .product-detail-container { background: #fff; padding: 32px; border-radius: 8px; }
+    .product-main { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    .product-image-section .main-image { width: 100%; border-radius: 8px; border: 1px solid #eee; }
+    
+    .product-info-section h2 { font-size: 28px; margin: 0 0 16px; }
+    .product-info-section .description { font-size: 16px; color: #495057; line-height: 1.6; margin-bottom: 24px; }
+    .product-info-section hr { border: none; border-top: 1px solid #eee; margin: 24px 0; }
+    .product-info-section .price-label { font-size: 16px; color: #6c757d; }
+    .product-info-section .price { font-size: 32px; font-weight: bold; color: #007bff; }
+    .product-info-section .price small { font-size: 20px; font-weight: normal; color: #212529; }
+    
+    .action-buttons { display: grid; grid-template-columns: 1fr 2fr; gap: 12px; margin-top: 24px; }
+    .action-buttons button { padding: 16px; font-size: 16px; font-weight: 600; border-radius: 8px; border: 1px solid #007bff; cursor: pointer; }
+    .cart-btn { background: #fff; color: #007bff; }
+    .buy-btn { background: #007bff; color: #fff; border-color: #007bff; }
+
+    .product-details-tabs { margin-top: 48px; }
+    .tab-navigation { display: flex; border-bottom: 2px solid #dee2e6; }
+    .tab-button { background: none; border: none; padding: 14px 20px; font-size: 16px; font-weight: 600; cursor: pointer; color: #868e96; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+    .tab-button.active { color: #007bff; border-color: #007bff; }
+    .tab-content { display: none; padding: 24px 4px; border-top: 1px solid #dee2e6; }
+    .tab-content.active { display: block; }
+
+    .review-list { list-style: none; padding: 0; margin: 0; }
+    .review-item { padding: 16px 0; border-bottom: 1px solid #f1f3f4; }
+    .review-item:last-child { border-bottom: none; }
+    .review-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .review-author { font-weight: 600; }
+    .review-rating { color: #ffc107; }
+    .review-text { color: #495057; }
+    
+    .store-list-tab-content { padding: 20px 0; }
+    .store-list-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .store-item-link { display: block; background: #f8f9fa; border-radius: 10px; overflow: hidden; text-decoration: none; color: inherit; transition: all .2s ease; }
+    .store-item-link:hover { transform: translateY(-4px); box-shadow: 0 6px 12px rgba(0,0,0,.08); }
+    .store-item-link img { width: 100%; height: 120px; object-fit: cover; display: block; }
+    .store-item-info { padding: 12px; }
+    .store-item-info strong { display: block; margin-bottom: 4px; font-size: 14px; }
+    .store-item-info span { font-size: 13px; color: #007bff; font-weight: 600; }
+
+    footer { border-top: 1px solid #dee2e6; padding:24px 0; margin-top:60px; }
+    .footer-content { max-width:1280px; margin:0 auto; padding:0 24px; font-size:13px; color:#495057; text-align: center; }
+  </style>
+</head>
+<body>
+  <header><a href="index.html">INCO</a></header>
+  <div class="container">
+    <div class="product-detail-container">
+      <div class="product-main">
+        <div class="product-image-section">
+          <img class="main-image" src="images/PC.png" alt="워크스테이션">
+        </div>
+        <div class="product-info-section">
+          <h2>AI 연산 워크스테이션</h2>
+          <p class="description">실시간 AI 연산 및 제어에 최적화된 고사양 워크스테이션. 연구 및 시뮬레이션 효율을 극대화합니다.</p>
+          <hr>
+          <div>
+            <span class="price-label">판매가</span>
+            <span class="price">250,000 <small>DEL</small></span>
+          </div>
+          <div class="action-buttons">
+            <button class="cart-btn" onclick="alert('상품을 장바구니에 담았습니다.')">장바구니</button>
+            <button class="buy-btn">바로 구매</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-details-tabs">
+        <div class="tab-navigation">
+          <button class="tab-button active" data-tab="details">상품 상세정보</button>
+          <button class="tab-button" data-tab="reviews">구매 후기</button>
+          <button class="tab-button" onclick="location.href='store.html'">스토어 목록 보기</button>
+        </div>
+        <div id="details" class="tab-content active">
+          <p><strong>[제품 사양]</strong><br> - 중앙 처리 장치: Neuro-Core v3 (SDA 특수 개발)<br> - 메모리: 128GB (고속 동기화)<br> - 그래픽 처리: INCO-Render-X2<br> - 특이사항: 자가 복구 나노머신 포함, 전력 소모 높음.</p>
+        </div>
+        <div id="reviews" class="tab-content">
+          <ul class="review-list">
+            <li class="review-item">
+              <div class="review-header">
+                <span class="review-rating">★★★★★</span>
+                <span class="review-author">전문엔지니어</span>
+              </div>
+              <p class="review-text">연구소에서 지급받아 사용 중입니다. 기존 모델 대비 연산 속도가 3배는 빨라진 것 같네요. 만족합니다.</p>
+            </li>
+            <li class="review-item">
+              <div class="review-header">
+                <span class="review-rating">★★★★☆</span>
+                <span class="review-author">늅늅</span>
+              </div>
+              <p class="review-text">성능은 확실한데, 전력을 너무 많이 먹어서 가정용으로는 부담스럽습니다. 델이 남아도는 분들께 추천.</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="footer-content">© 2025 INCO Corp. All rights reserved.</div></footer>
+
+  <script>
+    document.querySelectorAll('.tab-button').forEach(button => {
+        if(!button.hasAttribute('onclick')) {
+            button.addEventListener('click', () => {
+                const targetId = button.dataset.tab;
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                button.classList.add('active');
+                document.getElementById(targetId).classList.add('active');
+            });
+        }
+    });
+  </script>
+</body>
+</html>

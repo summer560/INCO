@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>ORINET 커뮤니티 - 글 보기</title>
+  <style>
+    body { margin:0; background:#121212; font-family:'Helvetica Neue', sans-serif; color:#e0e0e0; }
+    .container { max-width:900px; margin:0 auto; padding: 24px; }
+    a { text-decoration: none; color: #8ab4f8; }
+    a:hover { text-decoration: underline; }
+    header { background:#202124; font-size:24px; font-weight:bold; }
+    header a { display: block; padding: 16px 24px; color:#fff; }
+    .post-view-box { background: #1e1e1e; border-radius: 8px; padding: 24px; }
+    .post-header .category { color: #868e96; font-size: 14px; font-weight: 600; }
+    .post-header h1 { font-size: 28px; color: #fff; margin: 8px 0; }
+    .author-info { display: flex; align-items: center; gap: 12px; padding-bottom: 20px; border-bottom: 1px solid #333; }
+    .author-avatar { width: 40px; height: 40px; border-radius: 50%; background-color: #333; }
+    .author-details .name { font-weight: 600; }
+    .author-details .views { font-size: 13px; color: #868e96; }
+    .post-body { padding: 24px 0; font-size: 16px; line-height: 1.8; white-space: pre-wrap; }
+    .video-placeholder { background: #000; border: 1px solid #444; border-radius: 8px; height: 400px; display:flex; justify-content:center; align-items:center; cursor: pointer; position: relative; overflow: hidden; }
+    .play-button { width: 80px; height: 80px; background-color: rgba(0, 0, 0, 0.5); border: 2px solid rgba(255, 255, 255, 0.7); border-radius: 50%; display: flex; justify-content: center; align-items: center; transition: all 0.2s; z-index: 2; }
+    .play-button::before { content: ''; border-left: 20px solid #fff; border-top: 10px solid transparent; border-bottom: 10px solid transparent; margin-left: 5px; }
+    .video-placeholder:hover .play-button { transform: scale(1.1); background-color: rgba(255, 28, 28, 0.7); border-color: #fff; }
+    .play-button-outer-ring { position: absolute; width: 80px; height: 80px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.5); animation: ripple 1.5s infinite ease-out; opacity: 0; z-index: 1; }
+    @keyframes ripple { from { transform: scale(1); opacity: 0.7; } to { transform: scale(1.8); opacity: 0; } }
+    .recruitment-notice { background-color: #0a0a0a; border: 1px solid #444; padding: 20px; font-family: 'Courier New', monospace; line-height: 1.7; color: #00ff41; margin-top: 16px; border-radius: 8px; white-space: pre-wrap; }
+    .recruitment-notice h3 { text-align: center; color: #ffc107; margin-top: 0; margin-bottom: 16px; }
+    .recruitment-notice strong { color: #ffc107; }
+    .post-actions { display: flex; gap: 20px; border-top: 1px solid #333; padding-top: 20px; margin-top: 24px;}
+    .post-actions a { color: #adb5bd; font-weight: 500; font-size: 14px; }
+    .comments-section { margin-top: 32px; }
+    .comment-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
+    .comment-item { display: flex; gap: 12px; }
+    .comment-avatar { width: 36px; height: 36px; border-radius: 50%; background-color: #333; flex-shrink: 0; }
+    .comment-body { flex-grow: 1; }
+    .comment-body .name { font-weight: 600; font-size: 14px; display: inline; }
+    .comment-body .time { font-size: 12px; color: #868e96; margin-left: 8px; }
+    .comment-body .text { font-size: 15px; margin: 4px 0 8px; white-space: pre-wrap; }
+    .delete-comment-btn, .reply-btn { background: none; border: none; color: #868e96; cursor: pointer; font-size: 12px; margin-left: 8px; padding:0; }
+    .delete-comment-btn:hover { color: #ff4d4d; text-decoration: underline; }
+    .reply-btn:hover { color: #a3b7ff; text-decoration: underline; }
+    .reply-container { margin-left: 48px; margin-top: 12px; border-left: 2px solid #333; padding-left: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .reply-tag { color: #a3b7ff; font-weight: 500; }
+    .comment-form, .reply-form { margin-top: 12px; display: flex; gap: 10px; }
+    .comment-form textarea, .reply-form textarea { flex-grow: 1; height: 60px; background: #2a2a2a; border: 1px solid #444; border-radius: 8px; color: #e0e0e0; padding: 10px; font-size: 14px; resize: vertical; }
+    .reply-form textarea { height: 40px; }
+    .comment-form button, .reply-form button { background: #ffc107; color: #121212; border: none; border-radius: 8px; font-weight: bold; padding: 0 24px; cursor: pointer; }
+    .reply-form button { padding: 0 16px; font-size: 13px; }
+    .comment-pagination { display: flex; justify-content: center; align-items: center; margin-top: 24px; gap: 8px; }
+    .comment-pagination button { background: #2a2a2a; color: #e0e0e0; border: 1px solid #444; border-radius: 6px; padding: 8px 14px; cursor: pointer; font-weight: 600; }
+    .comment-pagination button:disabled { cursor: not-allowed; opacity: 0.5; }
+  </style>
+</head>
+<body>
+  <header><a href="index.html">INCO</a></header>
+  <main class="container" id="post-container"></main>
+
+  <script>
+    const COMMENTS_PER_PAGE = 5;
+    let currentPage = 1;
+    let allPosts, currentPost;
+    const loggedInUser = localStorage.getItem('userNickname') || '익명';
+
+    function findComment(commentId, comments) {
+        for (const comment of comments) {
+            if (comment.id === commentId) return { comment, parent: comments };
+            if (comment.replies) {
+                const found = findComment(commentId, comment.replies);
+                if (found) return found;
+            }
+        }
+        return null;
+    }
+
+    function renderReplies(replies, parentCommentId) {
+        if (!replies || replies.length === 0) return '';
+        let repliesHTML = `<div class="reply-container" id="replies-for-${parentCommentId}">`;
+        replies.forEach(reply => {
+            const deleteButtonHTML = reply.author === loggedInUser ? `<button class="delete-comment-btn" data-comment-id="${reply.id}">삭제</button>` : '';
+            repliesHTML += `
+                <div class="comment-item">
+                    <div class="comment-avatar"></div>
+                    <div class="comment-body">
+                        <div><span class="name">${reply.author}</span><button class="reply-btn" data-parent-id="${parentCommentId}" data-reply-to="${reply.author}">답글</button>${deleteButtonHTML}</div>
+                        <p class="text"><a href="#" class="reply-tag">@${reply.replyTo}</a> ${reply.text}</p>
+                    </div>
+                </div>
+            `;
+        });
+        repliesHTML += '</div>';
+        return repliesHTML;
+    }
+
+    function renderComments() {
+        const commentListEl = document.getElementById('comment-list');
+        const paginationEl = document.getElementById('comment-pagination');
+        if (!commentListEl) return;
+        const totalComments = currentPost.comments.length;
+        const startIndex = (currentPage - 1) * COMMENTS_PER_PAGE;
+        const endIndex = startIndex + COMMENTS_PER_PAGE;
+        const paginatedComments = currentPost.comments.slice(startIndex, endIndex);
+        commentListEl.innerHTML = '';
+        paginatedComments.forEach(comment => {
+            const deleteButtonHTML = comment.author === loggedInUser ? `<button class="delete-comment-btn" data-comment-id="${comment.id}">삭제</button>` : '';
+            const commentItem = document.createElement('li');
+            commentItem.className = 'comment-item';
+            commentItem.innerHTML = `
+                <div class="comment-avatar"></div>
+                <div class="comment-body">
+                    <div><span class="name">${comment.author}</span><button class="reply-btn" data-parent-id="${comment.id}" data-reply-to="${comment.author}">답글</button>${deleteButtonHTML}</div>
+                    <p class="text">${comment.text}</p>
+                    ${renderReplies(comment.replies, comment.id)}
+                    <div class="reply-form" id="reply-form-for-${comment.id}" style="display:none;">
+                        <textarea placeholder="@${comment.author}님에게 답글 달기..."></textarea>
+                        <button type="button" data-parent-id="${comment.id}" data-reply-to="${comment.author}">등록</button>
+                    </div>
+                </div>
+            `;
+            commentListEl.appendChild(commentItem);
+        });
+        document.querySelectorAll('.delete-comment-btn').forEach(button => button.addEventListener('click', handleDeleteComment));
+        document.querySelectorAll('.reply-btn').forEach(button => button.addEventListener('click', handleShowReplyForm));
+        document.querySelectorAll('.reply-form button').forEach(button => button.addEventListener('click', handleReplySubmit));
+        renderPagination(totalComments);
+    }
+
+    function renderPagination(totalComments) {
+        const paginationEl = document.getElementById('comment-pagination');
+        if (!paginationEl) return;
+        const totalPages = Math.ceil(totalComments / COMMENTS_PER_PAGE);
+        paginationEl.innerHTML = '';
+        if (totalPages <= 1) return;
+        const prevButton = document.createElement('button');
+        prevButton.textContent = '이전';
+        prevButton.disabled = currentPage === 1;
+        prevButton.addEventListener('click', () => { currentPage--; renderComments(); });
+        paginationEl.appendChild(prevButton);
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = i;
+            if (i === currentPage) {
+                pageButton.disabled = true;
+                pageButton.style.backgroundColor = '#ffc107';
+                pageButton.style.color = '#121212';
+            }
+            pageButton.addEventListener('click', () => { currentPage = i; renderComments(); });
+            paginationEl.appendChild(pageButton);
+        }
+        const nextButton = document.createElement('button');
+        nextButton.textContent = '다음';
+        nextButton.disabled = currentPage === totalPages;
+        nextButton.addEventListener('click', () => { currentPage++; renderComments(); });
+        paginationEl.appendChild(nextButton);
+    }
+    
+    function updateLocalStorage() {
+        const postIndex = allPosts.findIndex(p => p.id == currentPost.id);
+        if (postIndex > -1) {
+            allPosts[postIndex] = currentPost;
+            localStorage.setItem('orinetPosts', JSON.stringify(allPosts));
+        }
+    }
+    
+    function handleCommentSubmit() {
+        const textarea = document.getElementById('comment-textarea');
+        if (textarea.value.trim()) {
+            const newComment = { id: Date.now(), author: loggedInUser, text: textarea.value.trim(), replies: [] };
+            currentPost.comments.unshift(newComment);
+            updateLocalStorage();
+            textarea.value = '';
+            currentPage = 1;
+            renderComments();
+        }
+    }
+
+    function handleShowReplyForm(event) {
+        const parentId = event.target.dataset.parentId;
+        const replyForm = document.getElementById(`reply-form-for-${parentId}`);
+        if(replyForm) {
+            replyForm.style.display = replyForm.style.display === 'none' ? 'flex' : 'none';
+        }
+    }
+
+    function handleReplySubmit(event) {
+        const parentId = parseInt(event.target.dataset.parentId);
+        const replyTo = event.target.dataset.replyTo;
+        const textarea = event.target.previousElementSibling;
+        const replyText = textarea.value.trim();
+
+        if(replyText) {
+            const newReply = { id: Date.now(), author: loggedInUser, text: replyText, replyTo: replyTo };
+            const result = findComment(parentId, currentPost.comments);
+            if(result && result.comment) {
+                result.comment.replies = result.comment.replies || [];
+                result.comment.replies.push(newReply);
+                updateLocalStorage();
+                renderComments();
+            }
+        }
+    }
+
+    function handleDeleteComment(event) {
+        const commentId = parseInt(event.target.dataset.commentId);
+        if (confirm('정말로 삭제하시겠습니까?')) {
+            let deleted = false;
+            const deleteRecursive = (comments) => {
+                return comments.filter(comment => {
+                    if (comment.id === commentId) {
+                        deleted = true;
+                        return false;
+                    }
+                    if (comment.replies) {
+                        comment.replies = deleteRecursive(comment.replies);
+                    }
+                    return true;
+                });
+            };
+            currentPost.comments = deleteRecursive(currentPost.comments);
+            if(deleted) {
+                updateLocalStorage();
+                renderComments();
+            }
+        }
+    }
+
+    window.onload = () => {
+      const postContainer = document.getElementById('post-container');
+      const params = new URLSearchParams(window.location.search);
+      const postId = params.get('id');
+
+      allPosts = JSON.parse(localStorage.getItem('orinetPosts') || '[]');
+      currentPost = allPosts.find(p => p.id == postId);
+
+      if (currentPost) {
+        const videoHTML = (currentPost.id === 2 || currentPost.id === 4) ? `<div class="video-placeholder" onclick="this.innerHTML = '<p style=\\'color:#888; font-size:18px;\\'>[SDA의 요청으로 비공개 처리된 영상입니다]</p>'; this.style.pointerEvents='none';"><div class="play-button-outer-ring"></div><div class="play-button"></div></div>` : '';
+        const postContentHTML = currentPost.content.includes("<div class='recruitment-notice'>") ? currentPost.content : `<p>${currentPost.content.replace(/\n/g, '<br>')}</p>`;
+
+        postContainer.innerHTML = `
+          <div class="post-view-box">
+            <div class="post-header">
+              <div class="category">${currentPost.category}</div>
+              <h1>${currentPost.title}</h1>
+              <div class="author-info">
+                <div class="author-avatar"></div>
+                <div class="author-details">
+                  <div class="name">${currentPost.author}</div>
+                  <div class="views">조회 ${currentPost.views}</div>
+                </div>
+              </div>
+            </div>
+            <div class="post-body">
+              ${postContentHTML}
+              ${videoHTML}
+            </div>
+            <div class="post-actions">
+              <a href="#">👍 추천 ${Math.floor(Math.random() * 500)}</a>
+              <a href="#">🔗 공유하기</a>
+            </div>
+          </div>
+          <div class="comments-section">
+            <ul id="comment-list" class="comment-list"></ul>
+            <div id="comment-pagination" class="comment-pagination"></div>
+            <form class="comment-form" onsubmit="event.preventDefault(); handleCommentSubmit();">
+              <textarea id="comment-textarea" placeholder="댓글을 입력하세요..."></textarea>
+              <button type="submit">등록</button>
+            </form>
+          </div>
+        `;
+        renderComments();
+      } else {
+        postContainer.innerHTML = '<h1>게시글을 찾을 수 없습니다.</h1>';
+      }
+    };
+  </script>
+</body>
+</html>
