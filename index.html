@@ -81,12 +81,13 @@
     entryButton.addEventListener('click', () => {
   const nickname = nicknameInput.value.trim();
   if (nickname) {
-    sessionStorage.setItem('userNickname', nickname); // localStorage -> sessionStorage
+    sessionStorage.setItem('userNickname', nickname);
     window.location.href = 'main.html'; 
   } else {
     alert('닉네임을 입력해주세요.');
   }
 });
+
     nicknameInput.addEventListener('keyup', (event) => {
         if (event.key === 'Enter') { 
             entryButton.click();

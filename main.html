@@ -296,18 +296,16 @@
   const alertBanner = document.getElementById('alert-banner');
   alertBanner.textContent = alertMessages.length > 0 ? alertMessages[Math.floor(Math.random() * alertMessages.length)] : '';
   
-   window.onload = () => {
-    // sessionStorage에서 닉네임 가져오기
-    const nickname = sessionStorage.getItem('userNickname'); 
+ window.onload = () => {
+    const nickname = localStorage.getItem('userNickname');
     if (!nickname) {
-      // 닉네임 없으면 로그인 페이지로
-      window.location.href = 'index.html'; 
+      window.location.href = 'index.html';
       return;
     }
     displayProfile(nickname);
     updateBadge();
   };
-
+  
   function updateBadge() {
     const allMails = JSON.parse(localStorage.getItem('incoMails') || '[]');
     const unreadMails = allMails.filter(mail => mail.read === false);
