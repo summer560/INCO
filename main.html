@@ -344,7 +344,6 @@
     logoutButton.addEventListener('click', () => {
         if (confirm("모든 활동 기록(닉네임, 메일, 댓글 등)을 초기화하고 로그아웃하시겠습니까?")) {
             localStorage.clear();
-            // [수정] 이동할 페이지를 entry.html -> index.html 로 변경
             window.location.href = 'index.html'; 
         }
     });
