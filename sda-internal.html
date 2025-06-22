@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>SDA INTERNAL NETWORK</title>
+  <style>
+    body { margin: 0; font-family: 'Helvetica Neue', sans-serif; background-color: #161a23; color: #e0e0e0; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    a { text-decoration: none; color: #4dabf7; }
+    header { background-color: #0d1117; padding: 16px 24px; font-size: 24px; font-weight: bold; color: #00a8ff; border-bottom: 1px solid #30363d; }
+    
+    .login-gate { display: flex; justify-content: center; align-items: center; min-height: 80vh; }
+    .login-box { background-color: #1e2430; padding: 40px; border-radius: 8px; text-align: center; width: 380px; border: 1px solid #30363d; }
+    .login-box h1 { font-size: 22px; color: #00a8ff; margin: 0 0 8px; letter-spacing: 2px; }
+    .login-box p { color: #8892b0; font-size: 14px; margin-bottom: 24px; }
+    .login-box input, .login-box select { width: 100%; box-sizing: border-box; padding: 14px; margin-bottom: 12px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: #e0e0e0; font-size: 15px; }
+    .login-box select { text-align-last: center; }
+    .login-box button { width: 100%; padding: 14px; background: #00a8ff; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; }
+    
+    #internal-portal-content { display: none; }
+    .welcome-message { font-size: 28px; margin-bottom: 32px; font-weight: 300; }
+    .welcome-message strong { color: #00a8ff; font-weight: 600; }
+    .internal-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 24px; align-items: flex-start; }
+    .side-content, .main-content { display: flex; flex-direction: column; gap: 24px; }
+    .widget { background: #1e2430; padding: 24px; border-radius: 8px; border: 1px solid #30363d; }
+    .widget h2 { font-size: 20px; margin: 0 0 16px; padding-bottom: 16px; border-bottom: 1px solid #444; color: #00a8ff; }
+    .widget ul { list-style: none; padding: 0; font-size: 15px; line-height: 1.8; }
+    .profile-widget li { display: flex; justify-content: space-between; padding: 8px 0; }
+    .profile-widget .label { color: #8892b0; }
+    .task-widget li { background-color: #2a2f3b; padding: 12px; border-radius: 4px; margin-bottom: 10px; }
+    .task-widget .task-title { font-weight: bold; display: block; margin-bottom: 8px; color: #e0e0e0; }
+    .task-widget .task-progress { width: 100%; background-color: #161a23; border-radius: 4px; overflow: hidden; }
+    .task-widget .progress-bar { width: 0; height: 10px; background-color: #00a8ff; transition: width 0.5s ease; }
+    .task-widget .complete-btn { display: block; width: 100%; margin-top: 10px; background: #30363d; border: none; color: #e0e0e0; padding: 8px; border-radius: 4px; cursor: pointer; }
+    .task-widget .complete-btn.completed { background: #00a8ff; color: #fff; cursor: default; }
+  </style>
+</head>
+<body>
+  <header>SDA INTERNAL NETWORK // CONFIDENTIAL</header>
+  
+  <div class="container">
+    <div id="login-gate" class="login-gate">
+      <div class="login-box">
+        <h1>내부망 접속</h1>
+        <p>인가된 인원만 접근 가능합니다.</p>
+        <form id="login-form">
+          <input type="text" id="employee-name" placeholder="이름" required>
+          <select id="employee-dept-select" required>
+            <option value="" disabled selected>소속 부서 선택</option>
+            <option value="전투 부서">전투 부서</option>
+            <option value="개발 부서">개발 부서</option>
+            <option value="정보 통신 부서">정보 통신 부서</option>
+            <option value="생태 연구 부서">생태 연구 부서</option>
+            <option value="의학 연구 부서">의학 연구 부서</option>
+            <option value="심리 안정 부서">심리 안정 부서</option>
+          </select>
+          <input type="text" id="employee-code" placeholder="사원 코드" required>
+          <input type="password" id="password" placeholder="비밀번호" required>
+          <button type="submit">접속</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="internal-portal-content">
+      <h1 class="welcome-message"><strong id="welcome-nickname"></strong> 님, 환영합니다.</h1>
+      <div class="internal-grid">
+        <div class="side-content">
+          <div class="widget profile-widget">
+            <h2>내 정보</h2>
+            <ul>
+              <li><span class="label">이름</span> <strong id="info-name"></strong></li>
+              <li><span class="label">소속</span> <strong id="info-dept"></strong></li>
+              <li><span class="label">사원 코드</span> <strong id="info-code"></strong></li>
+            </ul>
+          </div>
+          <div class="widget task-widget">
+            <h2>개인 업무 현황</h2>
+            <ul id="task-list"></ul>
+          </div>
+        </div>
+        <div class="main-content">
+          <div class="widget">
+            <h2>내부 공지</h2>
+            <ul>
+              <li>• [보안] 3급 이상 기밀 문서 열람 시, 2단계 인증 프로토콜 의무화</li>
+              <li>• [복지] 안전 구역 A-3 구역 신규 식당 개점 안내</li>
+              <li>• [인사] 25-2차 정기 승급 심사 결과 발표</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const loginGate = document.getElementById('login-gate');
+    const internalPortal = document.getElementById('internal-portal-content');
+    const loginForm = document.getElementById('login-form');
+    
+    const departmentTasks = {
+        '전투 부서': [ { id: 't01', title: '경계 지역 순찰 (A-13)', progress: 25 }, { id: 't02', title: 'CR-WZ-042-B-S 토벌전 준비', progress: 60 } ],
+        '개발 부서': [ { id: 'd01', title: 'D-3 구역 방어벽 설계도 검토', progress: 80 }, { id: 'd02', title: '신규 자원 채굴기 성능 테스트', progress: 40 } ],
+        '정보 통신 부서': [ { id: 'c01', title: '통신망 노이즈 분석', progress: 70 }, { id: 'c02', title: '경보 시스템 정기 점검', progress: 10 } ],
+        '생태 연구 부서': [ { id: 'e01', title: '비지성체 크리처 약점 분석 보고', progress: 50 }, { id: 'e02', title: 'N-4 구역 식생 샘플 채취', progress: 90 } ],
+        '의학 연구 부서': [ { id: 'h01', title: 'X-27 백신 4차 접종 준비', progress: 75 }, { id: 'h02', title: '넥서린-B12 부작용 사례 연구', progress: 15 } ],
+        '심리 안정 부서': [ { id: 'p01', title: '딜런 브룩스 정기 상담 (3차)', progress: 50 }, { id: 'p02', title: '구조된 조사원 B 심리 분석', progress: 20 } ]
+    };
+
+    let assignedTasks = [];
+
+    function renderTasks() {
+        const taskListEl = document.getElementById('task-list');
+        taskListEl.innerHTML = '';
+        assignedTasks.forEach((task, index) => {
+            const li = document.createElement('li');
+            const isCompleted = task.progress === 100;
+            li.innerHTML = `
+                <span class="task-title">${task.title}</span>
+                <div class="task-progress"><div class="progress-bar" style="width: ${task.progress}%;"></div></div>
+                <button class="complete-btn ${isCompleted ? 'completed' : ''}" data-index="${index}" ${isCompleted ? 'disabled' : ''}>
+                    ${isCompleted ? '업무 완료' : '완료 보고'}
+                </button>
+            `;
+            taskListEl.appendChild(li);
+        });
+        document.querySelectorAll('.complete-btn:not(.completed)').forEach(button => {
+            button.addEventListener('click', completeTask);
+        });
+    }
+
+    function completeTask(event) {
+        const taskIndex = event.target.dataset.index;
+        assignedTasks[taskIndex].progress = 100;
+        renderTasks();
+    }
+
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('employee-name').value;
+        const dept = document.getElementById('employee-dept-select').value;
+        const code = document.getElementById('employee-code').value;
+        const password = document.getElementById('password').value;
+
+        if (name && dept && code && password) {
+            assignedTasks = departmentTasks[dept] || []; // 여기서 선택한 부서에 맞는 업무 할당
+            loginGate.style.display = 'none';
+            internalPortal.style.display = 'block';
+            
+            document.getElementById('welcome-nickname').textContent = name;
+            document.getElementById('info-name').textContent = name;
+            document.getElementById('info-dept').textContent = dept;
+            document.getElementById('info-code').textContent = code;
+            
+            renderTasks();
+        } else {
+            alert('모든 항목을 입력해주십시오.');
+        }
+    });
+  </script>
+</body>
+</html>

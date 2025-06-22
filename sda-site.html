@@ -2,40 +2,107 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>SDA - Special Disaster Agency</title>
+  <title>SDA: Seraph Defense Administration</title>
   <style>
-    body {
-      font-family: 'Helvetica Neue', sans-serif;
-      background-color: #111;
-      color: #eee;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background-color: #fff; color: #212529; }
+    a { text-decoration: none; color: inherit; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* 헤더 */
+    .sda-header { background-color: #fff; border-bottom: 1px solid #dee2e6; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .sda-logo { font-size: 24px; font-weight: 800; color: #343a40; }
+    .sda-nav ul { margin: 0; padding: 0; list-style: none; display: flex; gap: 32px; }
+    .sda-nav a { font-size: 16px; font-weight: 600; color: #495057; }
+    .sda-nav a:hover { color: #007bff; }
+
+    /* 히어로 섹션 */
+    .hero-section {
+      background-image: linear-gradient(rgba(0, 30, 60, 0.6), rgba(0, 30, 60, 0.6)), url('images/sda-hero-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      color: #fff;
       text-align: center;
+      padding: 120px 24px;
     }
-    .container {
-      border: 1px solid #444;
-      padding: 40px 60px;
-      border-radius: 12px;
-      background-color: #202124;
-    }
-    h1 {
-      color: #ffcc00;
-      font-size: 24px;
-      margin-bottom: 8px;
-    }
-    p {
-      font-size: 16px;
-      color: #ccc;
-    }
+    .hero-section h1 { font-size: 48px; margin: 0 0 16px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+    .hero-section p { font-size: 18px; max-width: 600px; margin: 0 auto; line-height: 1.6; }
+    
+    /* 콘텐츠 섹션 */
+    .content-section { padding: 80px 24px; }
+    .content-section.bg-light { background-color: #f8f9fa; }
+    .section-title { text-align: center; font-size: 36px; margin-bottom: 16px; }
+    .section-subtitle { text-align: center; font-size: 18px; color: #6c757d; margin-bottom: 48px; }
+
+    /* 그리드 레이아웃 */
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+    .card { background: #fff; padding: 24px; border-radius: 8px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .card h3 { font-size: 20px; margin: 0 0 12px; }
+    .card p { font-size: 15px; color: #495057; line-height: 1.6; }
+
+    /* 연혁(타임라인) 스타일 */
+    .timeline { border-left: 3px solid #007bff; padding: 20px 0 20px 40px; margin: 0 auto; max-width: 800px; position: relative; }
+    .timeline-item { margin-bottom: 40px; position: relative; }
+    .timeline-item::before { content: ''; background: #fff; border: 3px solid #007bff; border-radius: 50%; width: 15px; height: 15px; position: absolute; left: -50px; top: 0px; }
+    .timeline-item h4 { font-size: 20px; margin: 0 0 8px; }
+    .timeline-item p { font-size: 16px; color: #6c757d; margin: 0; }
+    
+    /* 채용 안내 버튼 */
+    .apply-button { display: inline-block; background-color: #007bff; color: #fff; padding: 14px 28px; border-radius: 8px; font-weight: bold; transition: background-color 0.2s; }
+    .apply-button:hover { background-color: #0056b3; }
+
+    /* 푸터 */
+    .sda-footer { background-color: #343a40; color: #adb5bd; text-align: center; padding: 40px 24px; font-size: 14px; }
   </style>
 </head>
 <body>
+  <header class="sda-header">
+    <div class="sda-logo"><a href="main.html">SDA</a></div>
+    <nav class="sda-nav">
+      <ul>
+        <li><a href="#">SDA 소개</a></li>
+        <li><a href="departments.html">부서 소개</a></li>
+        <li><a href="briefing.html">일일 브리핑</a></li>
+        <li><a href="recruitment.html">채용</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero-section">
+    <h1>인류의 방패, 세라프의 미래</h1>
+    <p>SDA는 위협으로부터 모든 시민을 보호하고, 인류의 지속 가능한 미래를 개척합니다.</p>
+  </section>
+
   <div class="container">
-    <h1>🚧 공식 사이트 점검 중 🚧</h1>
-    <p>현재 시스템 안정화를 위해 사이트를 점검하고 있습니다.<br>이용에 불편을 드려 죄송합니다.</p>
+    <section class="content-section">
+      <h2 class="section-title">SDA 소개</h2>
+      <p style="text-align: center; max-width: 700px; margin: 0 auto 48px;">SDA(Seraph Defense Administration, 세라프 개발청)는 크리처 및 외부 위협으로부터 인류의 생존권을 보호하고, 행성 ARC-7ζ '세라프'의 안정적인 발전을 도모하기 위해 설립된 행성 통합 관리 기구입니다. 저희는 방어, 탐사, 연구 등 모든 분야에서 인류의 가장 견고한 방패가 되겠습니다.</p>
+      <div class="grid">
+        <div class="card">
+          <h3>크리처 방어 및 격리</h3>
+          <p>안전 구역의 방어 체계를 유지하고, 위험 구역의 크리처를 격리하여 시민의 안전을 확보합니다.</p>
+        </div>
+        <div class="card">
+          <h3>경계 지역 탐사 및 확장</h3>
+          <p>미지의 영역을 탐사하여 자원을 확보하고, 인류의 생존 가능 영역을 점진적으로 확장합니다.</p>
+        </div>
+        <div class="card">
+          <h3>X-27 바이러스 연구 및 통제</h3>
+          <p>치명적인 X-27 바이러스의 확산을 막고, 치료제 및 백신 개발을 위한 연구를 주도합니다.</p>
+        </div>
+      </div>
+    </section>
   </div>
+
+  <div class="container">
+    <section class="content-section">
+        <h2 class="section-title">채용 안내</h2>
+        <p class="section-subtitle">SDA는 인류의 미래를 함께 개척할 용기 있고 헌신적인 인재를 상시 모집합니다. 지금, 인류의 방패가 되어주십시오.</p>
+        <a href="recruitment.html" class="apply-button" style="display: block; width: fit-content; margin: 0 auto;">채용 공고 확인하기</a>
+    </section>
+  </div>
+
+  <footer class="sda-footer">
+    <p>Seraph Defense Administration | 모든 권리 보유</p>
+  </footer>
 </body>
 </html>

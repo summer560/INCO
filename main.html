@@ -10,8 +10,9 @@
     a { text-decoration: none; color: inherit; }
 
     /* --- 헤더 & 상단 메뉴 --- */
-    header { background:#202124; color:#fff; padding:16px 24px; font-size:24px; font-weight:bold; cursor:pointer; }
-    .alert-banner { background:#b30000; color:#fff; text-align:center; padding:8px; font-size:14px; font-weight:bold; animation:blink 1.5s infinite; }
+    header { background:#202124; font-size:24px; font-weight:bold; }
+header a { display: block; padding: 16px 24px; color:#fff; text-decoration: none; }
+    .alert-banner { background:#1864ab; color:#fff; text-align:center; padding:8px; font-size:14px; font-weight:bold; animation:blink 1.5s infinite; }
     @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.5;} }
     
     .main-nav { background:#fff; padding: 0 24px; border-bottom: 1px solid #dee2e6; }
@@ -99,6 +100,94 @@
 
     footer { background:#dee2e6; padding:24px 0; margin-top:60px; }
     .footer-content { max-width:1280px; margin:0 auto; padding:0 24px; font-size:13px; color:#495057; display:flex; justify-content:space-between; }
+     
+    /* --- [수정] SDA 바로가기 배너 스타일 --- */
+    
+    .sda-widgets-group {
+        display: flex;
+        flex-direction: column;
+        gap: 28px; /* 이 gap이 브리핑과 바로가기 사이의 간격을 만듭니다. */
+    }
+    .sda-shortcut {
+      background: linear-gradient(135deg, #007bff, #17a2b8);
+      color: #fff;
+      text-align: center;
+      padding: 40px;
+      border-radius: 8px;
+    }
+    .sda-shortcut-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+    .sda-shortcut-header i {
+      font-size: 20px;
+      margin-right: 8px;
+    }
+    .sda-shortcut h3 {
+      font-size: 18px;
+      margin: 0;
+    }
+    .sda-shortcut p {
+      font-size: 15px;
+      color: #f8f9fa;
+      margin: 0 0 20px;
+      line-height: 1.4;
+    }
+    .sda-shortcut p strong {
+      font-weight: bold;
+      color: #fff;
+    }
+    .shortcut-button {
+      display: inline-flex;
+      align-items: center;
+      background-color: rgba(255,255,255,0.2);
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 16px;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+    .shortcut-button i {
+      font-size: 16px;
+      margin-right: 8px;
+    }
+    .shortcut-button:hover {
+      background-color: rgba(255,255,255,0.3);
+    }
+    
+    /* --- [신규] SDA 브리핑 위젯 스타일 --- */
+    .sda-briefing-widget .briefing-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sda-briefing-widget .briefing-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 14px;
+    }
+    .sda-briefing-widget .briefing-item a:hover {
+      text-decoration: underline;
+    }
+    .sda-briefing-widget .briefing-category {
+      flex-shrink: 0;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+      color: #fff;
+    }
+    .briefing-category.personnel { background-color: #868e96; }
+    .briefing-category.alert { background-color: #c92a2a; }
+    .briefing-category.notice { background-color: #1864ab; }
+  
   </style>
 </head>
 <body>
@@ -128,18 +217,18 @@
         </div>
         
         <div class="box popular-searches">
-            <h2>인기 검색어</h2>
-            <ol>
-                <li><a href="#"><span class="rank">1.</span> X-27 백신 정보</a></li>
-                <li><a href="#"><span class="rank">2.</span> 경계 지역 주거 지원</a></li>
-                <li><a href="#"><span class="rank">3.</span> 티타늄 합금 시세</a></li>
-                <li><a href="#"><span class="rank">4.</span> SDA 공개 채용</a></li>
-                <li><a href="#"><span class="rank">5.</span> 안전 구역 날씨</a></li>
-                <li><a href="#"><span class="rank">6.</span> 방호복 추천</a></li>
-                <li><a href="#"><span class="rank">7.</span> 크리처 종류</a></li>
-                <li><a href="#"><span class="rank">8.</span> 에너지 셀 가격</a></li>
-            </ol>
-        </div>
+        <h2>인기 검색어</h2>
+        <ol>
+          <li><a href="#"><span class="rank">1.</span> 경계 지역 눈</a></li>
+          <li><a href="#"><span class="rank">2.</span> 이상 기후 원인</a></li>
+          <li><a href="#"><span class="rank">3.</span> 방한 방호복</a></li>
+          <li><a href="#"><span class="rank">4.</span> 인기 핫팩</a></li>
+          <li><a href="#"><span class="rank">5.</span> SDA 기상 통제국</a></li>
+          <li><a href="#"><span class="rank">6.</span> 크리처 종류</a></li>
+          <li><a href="#"><span class="rank">7.</span> X-27 백신</a></li>
+          <li><a href="#"><span class="rank">8.</span> 세라프 프로젝트</a></li>
+        </ol>
+      </div>
         <div class="box">
           <h2>오늘의 추천 정보</h2>
           <div class="recommend-section">
@@ -162,26 +251,25 @@
           <div class="news-row-wrap">
             <div class="news-row">
               <a href="news.html" class="news-card">
-                <strong>경계 지역 생존자 구조 작전 재개</strong>
-                <span class="source">SDA 공식 발표</span>
+                <strong>경계 구역, 원인 불명의 이상 기후 발생</strong>
+                <span class="source">SDA 기상 통제국</span>
               </a>
               <a href="news.html" class="news-card">
-                <strong>감염자 치료제 3차 보고서 유출</strong>
-                <span class="source">세라프 타임즈</span>
-              </a>
-              <a href="news.html" class="news-card">
-                <strong>개발 구역 D-2 방어벽 증설 완료</strong>
-                <span class="source">SDA 개발 부서</span>
-              </a>
-              <a href="news.html" class="news-card">
-                <strong>실종 조사원 B, 생존 상태로 확인</strong>
+                <strong>SDA, 이상 기후 관련 정보 통제 강화</strong>
                 <span class="source">INCO 통신</span>
+              </a>
+              <a href="news.html" class="news-card">
+                <strong>혹한기용 겨울옷 수요 급증</strong>
+                <span class="source">INCO 스토어</span>
+              </a>
+              <a href="news.html" class="news-card">
+                <strong>위험 구역 무단 침입 민간인 사망</strong>
+                <span class="source">SDA 공식 발표</span>
               </a>
             </div>
           </div>
         </div>
       </main>
-
       <aside class="side-column">
         <div class="box login-box">
           <div class="profile-info">
@@ -220,27 +308,46 @@
                 <strong>보통</strong>
             </div>
         </div>
-        <div class="box stock-widget">
-            <h2>주요 자원 시세</h2>
-            <table>
-              <tr><th>자원명</th><th class="price">현재가</th><th class="price">등락</th></tr>
-              <tr><td>티타늄 합금</td><td class="price">1,250</td><td class="price up">▲ 5.2%</td></tr>
-              <tr><td>에너지 셀</td><td class="price">3,420</td><td class="price down">▼ 1.8%</td></tr>
-              <tr><td>데이터 칩</td><td class="price">880</td><td class="price up">▲ 3.1%</td></tr>
-            </table>
-        </div>
-        <div class="box ranking-widget">
-            <h2>커뮤니티 인기글</h2>
-            <ol>
-              <li><span class="rank">1</span><a href="#">위험 구역 탐험할 사람 모집합니다.</a></li>
-              <li><span class="rank">2</span><a href="#">SDA 전투 부서 면접 후기.txt</a></li>
-              <li><span class="rank">3</span><a href="#">딜런 브룩스 기자회견</a></li>
-            </ol>
-        </div>
-      </aside>
-    </div>
+        <aside class="side-column">
+        <div class="box login-box">
+          </div>
+        <div class="sda-widgets-group">
+            <div class="box sda-briefing-widget">
+              <h2>SDA 일일 브리핑</h2>
+              <ul class="briefing-list">
+                <li class="briefing-item">
+                  <span class="briefing-category personnel">인사</span>
+                  <a href="#">SDA 의학 연구 부서에서 인재를 모집합니다.</a>
+                </li>
+                <li class="briefing-item">
+                  <span class="briefing-category alert">경보</span>
+                  <a href="#">경계 지역 D-9 구역 위험 경보 발령</a>
+                </li>
+                <li class="briefing-item">
+                  <span class="briefing-category notice">공지</span>
+                  <a href="#">안전 구역 내 야간 통행 제한 시간 변경 안내 (24:00 → 01:00)</a>
+                </li>
+                <li class="briefing-item">
+                  <span class="briefing-category notice">공지</span>
+                  <a href="#">X-27 바이러스 백신 4차 접종 예약 개시</a>
+                </li>
+              </ul>
+            </div>
 
-    <div class="portal-section">
+            <div class="box sda-shortcut">
+              <div class="sda-shortcut-header">
+                <i class="fas fa-shield-alt"></i>
+                <h3>SDA 공식 채널</h3>
+              </div>
+              <p><strong>인류의 안전</strong>을 위한<br>SDA의 <strong>최신 정보</strong>를 빠르게 확인하세요!</p>
+              <a href="sda-site.html" class="shortcut-button"><i class="fas fa-external-link-alt"></i> 바로가기</a>
+            </div>
+        </div>
+
+      </aside>
+  </div>
+
+  <div class="portal-section">
       <h2>INCO 스토어</h2>
       <div class="store-row">
         <a href="product-detail.html" class="store-item">
@@ -251,10 +358,10 @@
           </div>
         </a>
         <a href="product-suit.html" class="store-item">
-          <img src="images/shop-banner.png" alt="데일리룩">
+          <img src="images/w1.png" alt="동계 방한 세트">
            <div class="store-item-info">
-            <strong>오늘의 데일리룩!</strong>
-            <span>가성비와 스타일을 동시에!</span>
+            <strong>[ARC-WEAR] 동계 방한 3종 세트</strong>
+            <span>혹한기 대비 신규 보급품</span>
           </div>
         </a>
         <a href="product-pc.html" class="store-item">
@@ -289,9 +396,9 @@
     if (profileNameElement) profileNameElement.textContent = `${nickname}님`;
   }
   const alertMessages = [
-    "⚠ 경계 지역, 미세 '이종(異種) 입자' 농도 '나쁨' 수준. 외출 시 방호 마스크 착용 권고.",
-    "⚠ 개발 구역 D-2 방어벽 증설 공사로 인해, 해당 구역 게이트 17:00부터 임시 폐쇄됩니다.",
-    "⚠ 안전 구역 내 상업 지구, 주말 야간 통행 제한이 일시적으로 완화됩니다."
+    "⚠ 이상 기후 경보: 원인 불명의 대기 냉각 현상으로, ARC-7ζ의 일부 구역에 눈이 내리고 있습니다. 외부 활동을 자제해주십시오.",
+    "⚠ SDA 기상 통제국 긴급 경보: 경계 지역 전역에 급격한 기온 강하 및 국지성 폭설이 관측되고 있습니다.",
+    "⚠ 주의: 경계 지역의 이상 저온 현상이 안전 구역까지 확대될 수 있습니다. 모든 시민께서는 방한 대비를 철저히 하시기 바랍니다."
   ];
   const alertBanner = document.getElementById('alert-banner');
   alertBanner.textContent = alertMessages.length > 0 ? alertMessages[Math.floor(Math.random() * alertMessages.length)] : '';

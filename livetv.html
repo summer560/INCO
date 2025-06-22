@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>LIVE TV - INCO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#f0e8ff; font-family:'VT323', 'Helvetica Neue', sans-serif; color:#333; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    a { text-decoration: none; color: inherit; }
+    header { background:#fff; border-bottom: 2px solid #000; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 24px; font-weight:bold; }
+    .header-actions { display: flex; align-items: center; gap: 16px; }
+    .header-actions button { font-family: inherit; background: #ffc2e2; color: #000; border: 2px solid #000; padding: 8px 14px; font-weight: bold; cursor: pointer; box-shadow: 2px 2px 0 #000; }
+    .header-actions .upload-btn { background: #a6f0c6; }
+    .section-title { font-size: 32px; margin: 40px 0 20px; }
+    .channel-carousel { display: flex; gap: 20px; overflow-x: auto; padding-bottom: 20px; scrollbar-width: thin; }
+    .channel-card { background: #fff; border: 2px solid #000; min-width: 280px; transition: all .2s ease; }
+    /* [수정] position: relative 추가 */
+    .channel-card { position: relative; background: #fff; border: 2px solid #000; min-width: 280px; transition: all .2s ease; }
+    .channel-card:hover { transform: translateY(-4px); box-shadow: 8px 8px 0 #000; }
+    .channel-card .thumbnail { background: #ddd; height: 160px; border-bottom: 2px solid #000; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #888;}
+    .channel-card .info { padding: 16px; }
+    .channel-card .title { font-size: 20px; margin: 0 0 8px; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .channel-card .streamer { font-size: 18px; color: #555; }
+    
+    /* [신규] 삭제 버튼 스타일 */
+    .delete-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 24px;
+        height: 24px;
+        background: #ff6b6b;
+        color: #fff;
+        border: 2px solid #000;
+        border-radius: 50%;
+        font-family: inherit;
+        font-weight: bold;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><a href="livetv.html">LIVE TV</a></div>
+    <div class="header-actions">
+      <span id="welcome-user" style="font-size: 18px;"></span>
+      <span id="berry-balance-display" style="font-size: 18px;"></span>
+      <button onclick="location.href='livetv-berries.html'">+ 열매 충전</button>
+      <button class="upload-btn" onclick="location.href='upload.html'">업로드</button>
+    </div>
+  </header>
+  <div class="container">
+    <section>
+      <h2 class="section-title">실시간 방송 중</h2>
+      <div class="channel-carousel" id="live-list"></div>
+    </section>
+    <section>
+      <h2 class="section-title">주간 TOP 10</h2>
+      <div class="channel-carousel" id="top-list"></div>
+    </section>
+  </div>
+  <script>
+     const nickname = localStorage.getItem('liveTvNickname');
+    if (!nickname) {
+      window.location.href = 'livetv-login.html';
+    }
+    
+    const initialVideos = [
+        { id: 'live01', title: 'SDA 전투 부서 Q&A', streamer: 'SDA 전 직원', file: 'live-qa.html', isLive: true },
+        { id: 'live02', title: '프로젝트: 세라프 달려봅시다!', streamer: 'Gamer', file: 'live-game.html', isLive: true },
+        { id: 'live03', title: '초보 생존 가이드', streamer: '생존전문가', file: 'live-survival.html', isLive: true },
+        { id: 'vod01', title: '[REPLAY] 지성체 탐사 마지막 기록', streamer: 'DangerChaser', file: 'live-chat-log.html', isLive: false },
+        { id: 'vod02', title: '옛날 지구 이야기 해드립니다', streamer: 'Old_Timer', file: 'live-history.html', isLive: false },
+        { id: 'vod03', title: '[VOD] 딜런 브룩스를 만나다', streamer: 'Citizen_K', file: 'live-dylan.html', isLive: false },
+        { id: 'vod04', title: '[VOD] 애쉬 리드포드 과거 폭로', streamer: '프로고발러', file: 'live-ash.html', isLive: false }
+    ];
+
+    // [신규] 삭제 처리 함수
+    function handleDelete(event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        if (confirm('정말로 이 방송을 삭제하시겠습니까?')) {
+            const videoId = event.target.dataset.videoId;
+            let allVideos = JSON.parse(localStorage.getItem('liveTvVideos'));
+            
+            // id가 문자열일 수 있으므로 비교 연산자 수정
+            allVideos = allVideos.filter(video => video.id.toString() !== videoId);
+            
+            localStorage.setItem('liveTvVideos', JSON.stringify(allVideos));
+            renderLiveTvPage(); // 목록 새로고침
+        }
+    }
+
+    // [수정] 페이지 전체를 다시 그리는 함수
+    function renderLiveTvPage() {
+        document.getElementById('welcome-user').textContent = `${nickname}님`;
+        const berries = parseInt(localStorage.getItem('liveTvBerries') || '0');
+        document.getElementById('berry-balance-display').textContent = `🍓 ${berries.toLocaleString()}`;
+
+        const allVideos = JSON.parse(localStorage.getItem('liveTvVideos'));
+
+        const liveList = document.getElementById('live-list');
+        const topList = document.getElementById('top-list');
+        liveList.innerHTML = '';
+        topList.innerHTML = '';
+
+        const createVideoCardHTML = (video) => {
+            // 내가 올린 영상에만 삭제 버튼 추가
+            const deleteButton = (video.streamer === nickname) 
+                ? `<button class="delete-btn" data-video-id="${video.id}">X</button>` 
+                : '';
+
+            return `
+              <div class="channel-card">
+                ${deleteButton}
+                <a href="${video.file || '#'}">
+                  <div class="thumbnail">PREVIEW</div>
+                  <div class="info">
+                    <div class="title">${video.title}</div>
+                    <div class="streamer">${video.streamer}</div>
+                  </div>
+                </a>
+              </div>
+            `;
+        };
+        
+        const liveVideos = allVideos.filter(video => video.isLive === true);
+        const topVideos = allVideos.filter(video => video.isLive === false);
+
+        liveVideos.forEach(video => {
+            liveList.innerHTML += createVideoCardHTML(video);
+        });
+
+        topVideos.forEach(video => {
+            topList.innerHTML += createVideoCardHTML(video);
+        });
+
+        // [신규] 새로 생성된 삭제 버튼에 이벤트 리스너 추가
+        document.querySelectorAll('.delete-btn').forEach(button => {
+            button.addEventListener('click', handleDelete);
+        });
+    }
+
+    window.onload = () => {
+        if (!localStorage.getItem('liveTvVideos')) {
+            localStorage.setItem('liveTvVideos', JSON.stringify(initialVideos));
+        }
+        renderLiveTvPage(); // 페이지 로드 시 전체 렌더링
+    };
+  </script>
+</body>
+</html>

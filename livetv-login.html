@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>로그인 - LIVE TV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <style>
+    body { margin: 0; font-family: 'VT323', 'Helvetica Neue', sans-serif; background-color: #f0e8ff; color: #333; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }
+    .entry-container { padding: 40px; border: 2px solid #000; background-color: #fff; box-shadow: 8px 8px 0 #000; }
+    h1 { font-size: 48px; color: #ff6b6b; margin: 0 0 24px; text-shadow: 2px 2px 0 #000; }
+    button { display: inline-block; margin-top: 20px; padding: 14px 28px; font-family: inherit; font-size: 24px; font-weight: bold; border: 2px solid #000; background: #ffc2e2; color: #000; box-shadow: 4px 4px 0 #000; cursor: pointer; transition: all .2s; }
+    button:hover { background: #a6f0c6; }
+  </style>
+</head>
+<body>
+  <div class="entry-container">
+    <h1>LIVE TV</h1>
+    <button id="login-button">NICKNAME START</button>
+  </div>
+  <script>
+    document.getElementById('login-button').addEventListener('click', () => {
+      const nickname = prompt("사용할 닉네임을 입력하세요:");
+      if (nickname && nickname.trim() !== '') {
+        localStorage.setItem('liveTvNickname', nickname.trim());
+        
+        // [추가] liveTvBerries 항목이 없으면 0으로 초기화
+        if (!localStorage.getItem('liveTvBerries')) {
+            localStorage.setItem('liveTvBerries', '0');
+        }
+        
+        window.location.href = 'livetv.html';
+      } else {
+        alert("닉네임을 입력해야 입장이 가능합니다.");
+      }
+    });
+  </script>
+</body>
+</html>

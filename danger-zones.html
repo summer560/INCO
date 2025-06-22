@@ -88,11 +88,12 @@
       </div>
     </div>
 
-    <div class="official-warning">
-      <span class="title">[SDA 긴급 공지] 위험 구역 통제 및 시민 안전 권고</span>
+   <div class="official-warning">
+      <span class="title">[SDA 긴급 공지] 위험 구역 통제 강화 및 무단 출입 엄금</span>
       <p>
-        SDA가 지정한 모든 '위험 구역'은 민간인의 출입을 전면 통제합니다.<br>
-        허가 없는 무단 진입 시 안전을 보장할 수 없으며, 이는 전적으로 본인의 책임입니다.<br>
+        SDA가 지정한 모든 '위험 구역' 및 '소개령 발령 구역'은 민간인의 출입을 전면 통제합니다.<br>
+        <strong>최근 경계 구역 A-13에 무단으로 진입한 민간인이 크리처의 습격으로 사망하는 비극적인 사건이 발생했습니다.</strong><br>
+        허가 없는 무단 진입 시 안전을 보장할 수 없으며, 적발 시 <strong>고액의 벌금이 부과</strong>되거나 관련 규정에 따라 <strong>구금</strong>될 수 있습니다.<br>
         모든 시민은 SDA의 공식 지침을 반드시 따라주시기 바랍니다.
       </p>
     </div>
@@ -102,9 +103,9 @@
 
   <script>
     const zoneData = [
-        { id: 'zone1', name: '경계 지역 A-13', status: 'danger', statusText: '심각', threat: 'X-27 바이러스, 비지성체 크리처', directive: '해당 구역 접근 전면 통제.' },
-        { id: 'zone2', name: '개발 구역 C-4', status: 'warning', statusText: '경고', threat: '비행형 크리처 출몰 빈도 증가.', directive: '필수 인원 외 출입 자제 권고.' },
-        { id: 'zone3', name: '위험 구역 N-9', status: 'danger', statusText: '교전 중', threat: '다수의 거대형 크리처와 교전 발생.', directive: '담당자 외 접근 절대 금지.' }
+        { id: 'zone1', name: '경계 구역 A', status: 'danger', statusText: '주민 소개령', threat: '이상 저온 현상 심화, 비지성체 크리처 활동 급증.', directive: '모든 구역민은 지정된 안전 구역으로 즉시 대피.' },
+        { id: 'zone2', name: '경계 구역 B', status: 'danger', statusText: '주민 소개령', threat: '원인 불명의 폭설로 인한 고립 위험.', directive: '모든 구역민은 지정된 안전 구역으로 즉시 대피.' },
+        { id: 'zone3', name: '경계 구역 C', status: 'warning', statusText: '대피 준비', threat: '이상 기후 확산 조짐, 이종 입자 농도 증가.', directive: 'SDA의 다음 지침에 따라 즉시 대피할 수 있도록 준비.' }
     ];
 
     const zoneListPanel = document.getElementById('zone-list-panel');

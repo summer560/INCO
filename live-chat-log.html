@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>라이브 기록 - ORINET</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#f0e8ff; font-family:'VT323', 'Helvetica Neue', sans-serif; color:#333; }
+    a { text-decoration: none; color: inherit; }
+    header { background:#fff; border-bottom: 2px solid #000; padding: 16px 24px; font-size: 24px; font-weight:bold; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+    .live-page-grid { display: grid; grid-template-columns: 2.5fr 1fr; gap: 24px; }
+    
+    .video-player { 
+      width: 100%; 
+      height: 0; 
+      padding-bottom: 56.25%; 
+      position: relative; 
+      background: #000; 
+      border: 2px solid #000;
+    }
+    .video-player .status-message { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 24px; letter-spacing: 2px; }
+    
+    .video-info-box { margin-top: 16px; background: #fff; padding: 20px; border: 2px solid #000; }
+    .video-info-box h1 { font-size: 28px; margin: 0 0 12px; }
+    
+    .streamer-info { display: flex; align-items: center; padding-top: 16px; border-top: 2px solid #000; }
+    .streamer-info .avatar { width: 48px; height: 48px; border-radius: 50%; background-color: #ddd; margin-right: 12px; border: 2px solid #000; }
+    .streamer-info .name { font-size: 20px; font-weight: 600; flex-grow: 1; }
+    .streamer-info .subscribe-btn { background: #ffc2e2; color: #000; padding: 10px 16px; border: 2px solid #000; font-weight: bold; box-shadow: 4px 4px 0 #000; }
+    
+    /* 채팅 기록 */
+    .chat-section { display: flex; flex-direction: column; background: #fff; border: 2px solid #000; }
+    .chat-section h2 { font-size: 20px; padding: 16px; border-bottom: 2px solid #000; margin: 0; background: #a6f0c6; }
+    
+    .chat-log-wrapper { flex-grow: 1; overflow-y: auto; padding: 16px; }
+    .chat-log { list-style: none; padding: 0; margin: 0; }
+    .chat-item { margin-bottom: 16px; font-size: 18px; line-height: 1.4; }
+    .chat-item .author { font-weight: bold; }
+    .chat-item .author.explorer { color: #ff6b6b; } /* 탐사대원 닉네임 색상 */
+    .chat-item .text { margin-left: 8px; }
+    .system-message { color: #888; font-style: italic; text-align: center; padding: 20px 0; }
+  </style>
+</head>
+<body>
+  <header><a href="livetv.html">LIVE TV</a></header>
+  <div class="container">
+    <div class="live-page-grid">
+      <div class="video-section">
+        <div class="video-player">
+          <div class="status-message">[OFFLINE]</div>
+        </div>
+        <div class="video-info-box">
+          <h1>[LIVE] 지성체 크리처 탐사 기록</h1>
+          <div class="streamer-info">
+            <div class="avatar"></div>
+            <div class="name">DangerChaser</div>
+            <a href="#" class="subscribe-btn">♡ 구독</a>
+          </div>
+        </div>
+      </div>
+      <div class="chat-section">
+        <h2>실시간 채팅 기록</h2>
+        <div class="chat-log-wrapper">
+          <ul class="chat-log">
+            <li class="chat-item"><span class="author">시청자123:</span><span class="text">좌표 어디에요?</span></li>
+            <li class="chat-item"><span class="author explorer">DangerChaser:</span><span class="text">위험 구역 깊숙한 곳입니다. 아직 특이사항은 없어요.</span></li>
+            <li class="chat-item"><span class="author">시청자45:</span><span class="text">와 진짜 용감하다...</span></li>
+            <li class="chat-item"><span class="author explorer">Pioneer:</span><span class="text">...이상하게 춥네. 방호복 온도 최대로 올렸는데.</span></li>
+            <li class="chat-item"><span class="author">시청자789:</span><span class="text">와 화면에 눈 내린다! 저기 눈 오는 지역이었음?</span></li>
+            <li class="chat-item"><span class="author explorer">DangerChaser:</span><span class="text">아니, 여긴 눈 올 곳이 아닌데. Pioneer, 기상 정보 확인해 줘.</span></li>
+            <li class="chat-item"><span class="author">시청자101:</span><span class="text">갑자기 분위기 왜이래;;</span></li>
+            <li class="chat-item"><span class="author explorer">Pioneer:</span><span class="text">...뭔가 이상해. 데이터가... 없어. 저 앞에... 저건 뭐지?</span></li>
+            <li class="system-message">--- 방송이 종료되었습니다 ---</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

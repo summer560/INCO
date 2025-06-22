@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>딜런 브룩스를 만나러 갑니다 - LIVE TV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#f0e8ff; font-family:'VT323', 'Helvetica Neue', sans-serif; color:#333; }
+    a { text-decoration: none; color: inherit; }
+    header { background:#fff; border-bottom: 2px solid #000; padding: 16px 24px; }
+    .logo { font-size: 24px; font-weight:bold; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+    .live-page-grid { display: grid; grid-template-columns: 2.5fr 1fr; gap: 24px; }
+    
+    .video-player { width: 100%; height: 0; padding-bottom: 56.25%; position: relative; background: #000; border: 2px solid #000; }
+    .video-player .status-message { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #888; font-size: 24px; letter-spacing: 2px; }
+    
+    .video-info-box { margin-top: 16px; background: #fff; padding: 20px; border: 2px solid #000; }
+    .video-info-box h1 { font-size: 28px; margin: 0 0 12px; }
+    
+    .streamer-info { display: flex; align-items: center; padding: 16px 0; border-top: 2px solid #000; }
+    .streamer-info .avatar { width: 48px; height: 48px; border-radius: 50%; background-color: #ddd; margin-right: 12px; border: 2px solid #000; }
+    .streamer-info .name { font-size: 20px; font-weight: 600; flex-grow: 1; }
+    
+    .donation-box { margin-top: 20px; background: #fff; padding: 20px; border: 2px solid #000; }
+    .donation-box h3 { font-size: 20px; margin: 0 0 16px; text-align: center; }
+    .donation-buttons { display: flex; justify-content: space-around; }
+    .donate-btn { font-family: inherit; font-size: 18px; border: 2px solid #000; background: #ffc2e2; padding: 10px; cursor: pointer; box-shadow: 4px 4px 0 #000; }
+    
+    .chat-section { display: flex; flex-direction: column; background: #fff; border: 2px solid #000; }
+    .chat-section h2 { font-size: 20px; padding: 16px; border-bottom: 2px solid #000; margin: 0; background: #a6f0c6; }
+    .chat-log-wrapper { flex-grow: 1; overflow-y: auto; padding: 16px; height: 580px; }
+    .chat-log { list-style: none; padding: 0; margin: 0; }
+    .chat-item { margin-bottom: 16px; font-size: 18px; line-height: 1.4; }
+    .chat-item .author { font-weight: bold; }
+    .chat-item .author.streamer { color: #007bff; }
+    .chat-item .author.dylan { color: #e03131; } /* 딜런 닉네임 색상 */
+    .system-message { font-size: 16px; color: #fff; background-color: #868e96; text-align: center; padding: 8px; border: 2px solid #000; }
+  </style>
+</head>
+<body>
+  <header><div class="logo"><a href="livetv.html">LIVE TV</a></div></header>
+<div class="container">
+    <div class="live-page-grid">
+      <div class="video-section">
+        <div class="video-player"><div class="status-message">[방송 종료]</div></div>
+        <div class="video-info-box">
+          <h1>[VOD] 딜런 브룩스를 만나다</h1>
+          <div class="streamer-info">
+            <div class="avatar"></div><div class="name">Citizen_K</div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-section">
+        <h2>채팅 기록</h2>
+        <div class="chat-log-wrapper">
+          <ul class="chat-log" id="chat-log">
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+        <div class="video-section">
+        <div class="video-player"><div class="status-message">[방송 종료]</div></div>
+        <div class="video-info-box">
+          <h1>[VOD] 딜런 브룩스를 만나다</h1>
+          <div class="streamer-info">
+            <div class="avatar"></div><div class="name">Citizen_K</div>
+          </div>
+        </div>
+        </div>
+      <div class="chat-section">
+        <h2>채팅 기록</h2>
+        <div class="chat-log-wrapper">
+          <ul class="chat-log" id="chat-log">
+            </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const chatLog = document.getElementById('chat-log');
+    const streamerName = 'Citizen_K';
+
+    function addChatMessage(author, text, authorClass = '') {
+        const li = document.createElement('li');
+        li.className = 'chat-item';
+        li.innerHTML = `<span class="author ${authorClass}">${author}:</span><span class="text"> ${text}</span>`;
+        chatLog.appendChild(li);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
+    
+    function addSystemMessage(text) {
+        const li = document.createElement('li');
+        li.className = 'system-message';
+        li.textContent = text;
+        chatLog.appendChild(li);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    // "열매 후원하기" 관련 로직은 삭제합니다.
+    
+    const chatHistory = [
+        { time: 500, author: streamerName, text: "딜런 브룩스 씨를 만나러 경계 지역 순찰 구역 근처로 왔습니다...", class: 'streamer' },
+        { time: 1500, author: '시청자1', text: "와 진짜 인터뷰 따는 거임? ㄷㄷ" },
+        { time: 3000, author: streamerName, text: "저기... 딜런 브룩스 씨 맞으시죠? 신도시 사태에 대해 몇 가지만 여쭤봐도 될까요?", class: 'streamer' },
+        { time: 4500, author: '같은 동료', text: "누구세요? 지금은 업무 중이라 이러시면 곤란합니다.", class: 'dylan' },
+        { time: 5500, author: '시청자2', text: "와... 성격" },
+        { time: 6500, author: streamerName, text: "지금 딜런 씨에게 묻고 있는 겁니다! 아니, 저기 잠시만요!", class: 'streamer' },
+        { time: 9000, author: '시청자3', text: "동료가 데리고 가버렸네..." },
+        { time: 10000, author: streamerName, text: "하... 실패했네요. 죄송합니다 여러분.", class: 'streamer' },
+        { time: 11000, author: null, text: '--- 스트리머가 방송을 종료했습니다 ---', system: true }
+    ];
+
+    chatHistory.forEach(chat => {
+        setTimeout(() => {
+            if (chat.system) {
+                addSystemMessage(chat.text);
+            } else {
+                addChatMessage(chat.author, chat.text, chat.class || '');
+            }
+        }, chat.time);
+    });
+  </script>
+</body>
+</html>

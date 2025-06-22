@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>새 영상 업로드 - LIVE TV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#f0e8ff; font-family:'VT323', 'Helvetica Neue', sans-serif; color:#333; }
+    .container { max-width: 800px; margin: 0 auto; padding: 24px; }
+    a { text-decoration: none; color: inherit; }
+    header { background:#fff; border-bottom: 2px solid #000; padding: 16px 24px; }
+    .logo { font-size: 24px; font-weight:bold; }
+    .upload-container { margin-top: 32px; background: #fff; padding: 32px; border: 2px solid #000; }
+    .upload-container h1 { font-size: 32px; margin: 0 0 24px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { font-size: 20px; display: block; margin-bottom: 8px; }
+    .form-group input, .form-group textarea { font-family: inherit; width: 100%; box-sizing: border-box; padding: 12px; font-size: 18px; border: 2px solid #000; background: #f8f9fa; }
+    .form-group textarea { height: 150px; resize: vertical; }
+    .upload-btn { display: inline-block; margin-top: 20px; padding: 14px 28px; font-family: inherit; font-size: 24px; font-weight: bold; border: 2px solid #000; background: #a6f0c6; color: #000; box-shadow: 4px 4px 0 #000; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header><div class="logo"><a href="livetv.html">LIVE TV</a></div></header>
+  <div class="container">
+    <div class="upload-container">
+      <h1>새 영상 업로드</h1>
+      <form id="upload-form">
+        <div class="form-group">
+          <label for="video-title">방송 제목</label>
+          <input type="text" id="video-title" required>
+        </div>
+        <div class="form-group">
+          <label for="video-desc">방송 설명</label>
+          <textarea id="video-desc"></textarea>
+        </div>
+        <button type="submit" class="upload-btn">업로드</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('upload-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const title = document.getElementById('video-title').value.trim();
+        const streamer = localStorage.getItem('liveTvNickname');
+
+        if (!title) {
+            alert('방송 제목은 필수입니다.');
+            return;
+        }
+
+        let allVideos = JSON.parse(localStorage.getItem('liveTvVideos') || '[]');
+        
+        // [수정] 새 영상에 isLive: false 속성을 추가합니다. (사용자가 올리는 건 '지난 방송'으로 취급)
+        const newVideo = {
+            id: Date.now(),
+            title: title,
+            streamer: streamer,
+            file: '#',
+            isLive: true 
+        };
+        
+        allVideos.unshift(newVideo);
+        localStorage.setItem('liveTvVideos', JSON.stringify(allVideos));
+
+        alert('영상이 성공적으로 업로드되었습니다!');
+        window.location.href = 'livetv.html';
+    });
+</script>
+</body>
+</html>

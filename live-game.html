@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>프로젝트: 세라프 달려봅시다! - LIVE TV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#f0e8ff; font-family:'VT323', 'Helvetica Neue', sans-serif; color:#333; }
+    a { text-decoration: none; color: inherit; }
+    header { background:#fff; border-bottom: 2px solid #000; padding: 16px 24px; }
+    .logo { font-size: 24px; font-weight:bold; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+    .live-page-grid { display: grid; grid-template-columns: 2.5fr 1fr; gap: 24px; }
+    
+    .video-player { width: 100%; height: 0; padding-bottom: 56.25%; position: relative; background: #000; border: 2px solid #000; }
+    .video-player .status-message { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 24px; letter-spacing: 2px; }
+    
+    .video-info-box { margin-top: 16px; background: #fff; padding: 20px; border: 2px solid #000; }
+    .video-info-box h1 { font-size: 28px; margin: 0 0 12px; }
+    
+    .streamer-info { display: flex; align-items: center; padding: 16px 0; border-top: 2px solid #000; }
+    .streamer-info .avatar { width: 48px; height: 48px; border-radius: 50%; background-color: #ddd; margin-right: 12px; border: 2px solid #000; }
+    .streamer-info .name { font-size: 20px; font-weight: 600; flex-grow: 1; }
+    
+    .donation-box { margin-top: 20px; background: #fff; padding: 20px; border: 2px solid #000; }
+    .donation-box h3 { font-size: 20px; margin: 0 0 16px; text-align: center; }
+    .donation-buttons { display: flex; justify-content: space-around; }
+    .donate-btn { font-family: inherit; font-size: 18px; border: 2px solid #000; background: #ffc2e2; padding: 10px; cursor: pointer; box-shadow: 4px 4px 0 #000; }
+    
+    .chat-section { display: flex; flex-direction: column; background: #fff; border: 2px solid #000; }
+    .chat-section h2 { font-size: 20px; padding: 16px; border-bottom: 2px solid #000; margin: 0; background: #a6f0c6; }
+    .chat-log-wrapper { flex-grow: 1; overflow-y: auto; padding: 16px; height: 400px; }
+    .chat-log { list-style: none; padding: 0; margin: 0; }
+    .chat-item { margin-bottom: 16px; font-size: 18px; line-height: 1.4; }
+    .chat-item .author { font-weight: bold; }
+    .chat-item .author.streamer { color: #007bff; }
+    .system-message { font-size: 16px; color: #fff; background-color: #ff6b6b; text-align: center; padding: 8px; border: 2px solid #000; }
+    
+    .partner-chooser { padding: 16px; border-top: 2px solid #000; }
+    .partner-chooser h3 { font-size: 18px; margin: 0 0 12px; }
+    .partner-buttons { display: flex; flex-direction: column; gap: 8px; }
+    .partner-btn { font-family: inherit; font-size: 16px; text-align: left; background: #eee; border: 2px solid #000; padding: 10px; cursor: pointer; }
+    .partner-btn.troll { background: #ffc2e2; border-color: #ff6b6b; }
+    .partner-btn:disabled { background: #ccc; color: #888; cursor: not-allowed; }
+    
+    @keyframes kick-flash { 0%, 100% { background-color: #f0e8ff; } 50% { background-color: #8c1c1c; } }
+    .kicked-out { animation: kick-flash 0.3s 2; }
+  </style>
+</head>
+<body>
+  <header><div class="logo"><a href="livetv.html">LIVE TV</a></div></header>
+  <div class="container">
+    <div class="live-page-grid">
+      <div class="video-section">
+        <div class="video-player"><div class="status-message">[LIVE]</div></div>
+        <div class="video-info-box">
+          <h1>프로젝트: 세라프 달려봅시다!</h1>
+          <div class="streamer-info">
+            <div class="avatar"></div><div class="name">Gamer</div>
+          </div>
+        </div>
+        <div class="donation-box">
+          <h3>열매 후원하기</h3>
+          <div class="donation-buttons">
+            <button class="donate-btn" data-amount="10">🍓 10개</button>
+            <button class="donate-btn" data-amount="50">🍓 50개</button>
+            <button class="donate-btn" data-amount="100">🍓 100개</button>
+          </div>
+        </div>
+      </div>
+      <div class="chat-section">
+        <h2>실시간 채팅</h2>
+        <div class="chat-log-wrapper"><ul class="chat-log" id="chat-log"></ul></div>
+        <div class="partner-chooser">
+          <h3>오늘의 파트너는?</h3>
+          <div class="partner-buttons" id="partner-buttons">
+            <button class="partner-btn" data-partner="ash">애쉬</button>
+            <button class="partner-btn" data-partner="dylan">딜런</button>
+            <button class="partner-btn" data-partner="ren">렌</button>
+            <button class="partner-btn troll" data-partner="troll">이 스트리머, 게임 존나 못할 것 같다 ㅋㅋㅋㅋ</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const chatLog = document.getElementById('chat-log');
+    const nickname = localStorage.getItem('liveTvNickname') || '익명';
+    const streamerName = 'Gamer';
+
+    const partnerDialogue = {
+        ash: "좋았어! 오늘은 애쉬 팀장님과 함께!",
+        dylan: "오케이! 낭만의 딜런 선배님으로 갑니다!",
+        ren: "ㄷㄷ 깐깐한 렌 부사관님... 긴장해야겠네;"
+    };
+
+    function addChatMessage(author, text, authorClass = '') {
+        const li = document.createElement('li');
+        li.className = 'chat-item';
+        li.innerHTML = `<span class="author ${authorClass}">${author}:</span><span class="text"> ${text}</span>`;
+        chatLog.appendChild(li);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
+    
+    function addSystemMessage(text) {
+        const li = document.createElement('li');
+        li.className = 'system-message';
+        li.textContent = text;
+        chatLog.appendChild(li);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    document.querySelectorAll('.donate-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const amount = parseInt(e.target.dataset.amount);
+            let currentBerries = parseInt(localStorage.getItem('liveTvBerries') || '0');
+            
+            if (currentBerries >= amount) {
+                currentBerries -= amount;
+                localStorage.setItem('liveTvBerries', currentBerries.toString());
+                addSystemMessage(`${nickname}님이 열매 ${amount}개를 후원했습니다!`);
+                setTimeout(() => addChatMessage(streamerName, `${nickname}님, 후원 감사합니다!`, 'streamer'), 300);
+                if (amount >= 100) setTimeout(() => addChatMessage('시청자777', `와 ${amount}개! 큰손이다 ㄷㄷ`), 600);
+            } else {
+                if(confirm('보유한 열매가 부족합니다. 충전소로 이동하시겠습니까?')) {
+                    window.open('livetv-berries.html', '_blank');
+                }
+            }
+        });
+    });
+
+    document.querySelectorAll('.partner-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const partnerKey = e.target.dataset.partner;
+            const chatText = e.target.textContent;
+
+            document.querySelectorAll('.partner-btn').forEach(btn => btn.disabled = true);
+
+            if (partnerKey === 'troll') {
+                addChatMessage(nickname, chatText);
+                setTimeout(() => {
+                    addChatMessage(streamerName, `^^ 그런 말 하시면 바로 강퇴입니다~`, 'streamer');
+                }, 500);
+                setTimeout(() => {
+                    document.body.classList.add('kicked-out');
+                    document.querySelector('.chat-section').innerHTML = '';
+                    document.querySelector('.donation-box').innerHTML = '';
+                    
+                    addSystemMessage(`${nickname} 님을 채널에서 강제 퇴장시켰습니다.`);
+                    
+                    setTimeout(() => {
+                        window.location.href = 'livetv.html';
+                    }, 2000);
+
+                }, 1500);
+            } else {
+                addChatMessage(nickname, `오늘의 파트너는 ${chatText}으로 가자!`);
+                setTimeout(() => {
+                    addChatMessage(streamerName, partnerDialogue[partnerKey], 'streamer');
+                }, 1000);
+            }
+        });
+    });
+
+    addChatMessage('시청자55', '이 게임 어렵다던데');
+    setTimeout(() => addChatMessage(streamerName, "오케이, 오늘은 SDA 신도시 사태를 배경으로 한 미션을 해보겠습니다.", 'streamer'), 1500);
+    setTimeout(() => addChatMessage(streamerName, "시청자 여러분들이 오늘 파트너를 정해주세요!", 'streamer'), 3000);
+  </script>
+</body>
+</html>

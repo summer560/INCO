@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>옛날 지구 이야기 - LIVE TV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#f0e8ff; font-family:'VT323', 'Helvetica Neue', sans-serif; color:#333; }
+    a { text-decoration: none; color: inherit; }
+    header { background:#fff; border-bottom: 2px solid #000; padding: 16px 24px; }
+    .logo { font-size: 24px; font-weight:bold; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+    .live-page-grid { display: grid; grid-template-columns: 2.5fr 1fr; gap: 24px; }
+    
+    .video-player { width: 100%; height: 0; padding-bottom: 56.25%; position: relative; background: #000; border: 2px solid #000; }
+    .video-player .status-message { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #888; font-size: 24px; letter-spacing: 2px; }
+    
+    .video-info-box { margin-top: 16px; background: #fff; padding: 20px; border: 2px solid #000; }
+    .video-info-box h1 { font-size: 28px; margin: 0 0 12px; }
+    
+    .streamer-info { display: flex; align-items: center; padding: 16px 0; border-top: 2px solid #000; }
+    .streamer-info .avatar { width: 48px; height: 48px; border-radius: 50%; background-color: #ddd; margin-right: 12px; border: 2px solid #000; }
+    .streamer-info .name { font-size: 20px; font-weight: 600; flex-grow: 1; }
+    
+    .chat-section { display: flex; flex-direction: column; background: #fff; border: 2px solid #000; }
+    .chat-section h2 { font-size: 20px; padding: 16px; border-bottom: 2px solid #000; margin: 0; background: #a6f0c6; }
+    .chat-log-wrapper { flex-grow: 1; overflow-y: auto; padding: 16px; height: 580px; }
+    .chat-log { list-style: none; padding: 0; margin: 0; }
+    .chat-item { margin-bottom: 16px; font-size: 18px; line-height: 1.4; }
+    .chat-item .author { font-weight: bold; }
+    .chat-item .author.streamer { color: #868e96; }
+  </style>
+</head>
+<body>
+  <header><div class="logo"><a href="livetv.html">LIVE TV</a></div></header>
+  <div class="container">
+    <div class="live-page-grid">
+      <div class="video-section">
+        <div class="video-player"><div class="status-message">[방송 종료]</div></div>
+        <div class="video-info-box">
+          <h1>옛날 지구 이야기 해드립니다</h1>
+          <div class="streamer-info">
+            <div class="avatar"></div><div class="name">Old_Timer</div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-section">
+        <h2>채팅 기록</h2>
+        <div class="chat-log-wrapper">
+          <ul class="chat-log" id="chat-log">
+            </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const chatLog = document.getElementById('chat-log');
+    const streamerName = 'Old_Timer';
+
+    function addChatMessage(author, text, authorClass = '') {
+        const li = document.createElement('li');
+        li.className = 'chat-item';
+        li.innerHTML = `<span class="author ${authorClass}">${author}:</span><span class="text"> ${text}</span>`;
+        chatLog.appendChild(li);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
+    
+    // [수정] VOD용 채팅 기록
+    const chatHistory = [
+        { time: 500, author: streamerName, text: "자, 오늘은 대멸망 이전 지구에서 흔했다는 '전쟁'에 대해 이야기해볼까 합니다.", class: 'streamer' },
+        { time: 2000, author: '시청자1', text: "전쟁이요? 크리처랑 싸우는 거 말고 또 다른 게 있었나요?" },
+        { time: 3500, author: streamerName, text: "놀랍게도, 크리처가 아닌... 인간끼리 서로 죽고 죽이는 싸움을 말하는 겁니다.", class: 'streamer' },
+        { time: 4500, author: '시청자2', text: "헐... 왜요? 같은 인간끼리 왜 싸워요?" },
+        { time: 5000, author: '시청자3', text: "이해가 안 가네" },
+        { time: 6500, author: streamerName, text: "기록에 따르면 '국가'나 '이념'이라는, 지금은 사라진 개념들 때문에 싸웠다고 합니다.", class: 'streamer' },
+        { time: 8000, author: '차차', text: '지금 SDA가 하는 짓 보면 똑같구만 뭘.' },
+        { time: 9500, author: '유카카', text: '국가... 정말 흥미로운 개념이네요. 지금의 \'구역\'과는 많이 다른 거겠죠?' },
+        { time: 11000, author: streamerName, text: "많이 다르죠. 각 국가마다 다른 언어와 법, 군대를 가지고 있었다고 하니까요. 지금 우리가 하나의 언어를 쓰는 것과는 대조적입니다.", class: 'streamer' },
+        { time: 12500, author: '시청자4', text: '그럼 서로 말도 안 통하는데 어떻게 싸워요?' },
+        { time: 14000, author: streamerName, text: "그래서 '통역'이라는 직업도 있었다고 합니다. 참 비효율적이죠? 어쩌면 인류는 대멸망을 통해 비로소 하나가 될 수 있었던 건지도 모르겠습니다.", class: 'streamer' },
+        { time: 15500, author: '네러럴', text: '하나가 되긴 뭘 하나가 돼. 결국 SDA라는 하나의 거대한 국가 밑에 통제당하는 것뿐이지.' }
+    ];
+
+
+    chatHistory.forEach(chat => {
+        setTimeout(() => {
+            addChatMessage(chat.author, chat.text, chat.class || '');
+        }, chat.time);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>SDA 전투 부서 Q&A - LIVE TV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#f0e8ff; font-family:'VT323', 'Helvetica Neue', sans-serif; color:#333; }
+    a { text-decoration: none; color: inherit; }
+    header { background:#fff; border-bottom: 2px solid #000; padding: 16px 24px; }
+    .logo { font-size: 24px; font-weight:bold; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+    .live-page-grid { display: grid; grid-template-columns: 2.5fr 1fr; gap: 24px; }
+    
+    .video-player { width: 100%; height: 0; padding-bottom: 56.25%; position: relative; background: #000; border: 2px solid #000; }
+    .video-player .status-message { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #fff; font-size: 24px; letter-spacing: 2px; }
+    
+    .video-info-box { margin-top: 16px; background: #fff; padding: 20px; border: 2px solid #000; }
+    .video-info-box h1 { font-size: 28px; margin: 0 0 12px; }
+    
+    .streamer-info { display: flex; align-items: center; padding: 16px 0; border-top: 2px solid #000; }
+    .streamer-info .avatar { width: 48px; height: 48px; border-radius: 50%; background-color: #ddd; margin-right: 12px; border: 2px solid #000; }
+    .streamer-info .name { font-size: 20px; font-weight: 600; flex-grow: 1; }
+    
+    .donation-box { margin-top: 20px; background: #fff; padding: 20px; border: 2px solid #000; }
+    .donation-box h3 { font-size: 20px; margin: 0 0 16px; text-align: center; }
+    .donation-buttons { display: flex; justify-content: space-around; }
+    .donate-btn { font-family: inherit; font-size: 18px; border: 2px solid #000; background: #ffc2e2; padding: 10px; cursor: pointer; box-shadow: 4px 4px 0 #000; }
+    
+    .chat-section { display: flex; flex-direction: column; background: #fff; border: 2px solid #000; }
+    .chat-section h2 { font-size: 20px; padding: 16px; border-bottom: 2px solid #000; margin: 0; background: #a6f0c6; }
+    .chat-log-wrapper { flex-grow: 1; overflow-y: auto; padding: 16px; height: 400px; }
+    .chat-log { list-style: none; padding: 0; margin: 0; }
+    .chat-item { margin-bottom: 16px; font-size: 18px; line-height: 1.4; }
+    .chat-item .author { font-weight: bold; }
+    .chat-item .author.streamer { color: #007bff; }
+    .system-message { font-size: 16px; color: #fff; background-color: #ff6b6b; text-align: center; padding: 8px; border: 2px solid #000; }
+
+    /* [신규] 질문 선택기 스타일 */
+    .question-chooser { padding: 16px; border-top: 2px solid #000; }
+    .question-chooser h3 { font-size: 18px; margin: 0 0 12px; }
+    .question-buttons { display: flex; flex-direction: column; gap: 8px; }
+    .question-btn { font-family: inherit; font-size: 16px; text-align: left; background: #eee; border: 2px solid #000; padding: 10px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header><div class="logo"><a href="livetv.html">LIVE TV</a></div></header>
+  <div class="container">
+    <div class="live-page-grid">
+      <div class="video-section">
+        <div class="video-player"><div class="status-message">[LIVE]</div></div>
+        <div class="video-info-box">
+          <h1>SDA 전투 부서 Q&A</h1>
+          <div class="streamer-info">
+            <div class="avatar"></div><div class="name">SDA 전 직원</div>
+          </div>
+        </div>
+        <div class="donation-box">
+          <h3>열매 후원하기</h3>
+          <div class="donation-buttons">
+            <button class="donate-btn" data-amount="10">🍓 10개</button>
+            <button class="donate-btn" data-amount="50">🍓 50개</button>
+            <button class="donate-btn" data-amount="100">🍓 100개</button>
+          </div>
+        </div>
+      </div>
+      <div class="chat-section">
+        <h2>실시간 채팅</h2>
+        <div class="chat-log-wrapper"><ul class="chat-log" id="chat-log"></ul></div>
+        <div class="question-chooser">
+            <h3>질문하기</h3>
+            <div class="question-buttons" id="initial-questions">
+              <button class="question-btn" data-question="ash">전투 부서 팀장님은 어떤 사람인가요?</button>
+              <button class="question-btn" data-question="dylan">딜런 브룩스는 어떤 사람인가요?</button>
+              <button class="question-btn" data-question="ren">렌이라는 사람은 누구죠?</button>
+            </div>
+            <div id="follow-up-container"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const chatLog = document.getElementById('chat-log');
+    const nickname = localStorage.getItem('liveTvNickname') || '익명';
+    const streamerName = 'SDA 전 직원';
+
+    const streamerAnswers = {
+        ash: {
+            answer: '아, 애쉬 팀장님이요? 저희같은 신입들한테는 은근히 잘 챙겨주시는 분입니다. 물론 훈련은 정말 힘들지만요...',
+            reactions: [ { author: '시청자234', text: '오... 의외네' }, { author: '시청자551', text: '그래도 멋있음' } ],
+            followUp: {
+                question: '과거 문란했던 소문이 있다는데 사실인가요?',
+                answer: '어... 그건 제가 말씀드리기 좀... 공식적인 자리에서는 답변하기 어렵습니다.',
+                reactions: [ { author: '시청자112', text: '오 ㅋㅋ 대답 회피하네' }, { author: '시청자825', text: '찐인가보다' } ]
+            }
+        },
+        dylan: {
+            answer: '딜런 선배님은... 제가 직접 뵙지는 못했지만, 신도시 사태 이전에는 정말 유능하고 동료를 아끼는 분이었다고 들었습니다.',
+            reactions: [ { author: '시청자89', text: '지금은 완전 다른 사람이던데' }, { author: '시청자414', text: 'SDA가 사람 하나 망가뜨린 거지' } ],
+            followUp: {
+                question: '현재 정상적으로 근무하고 있는 거 맞나요?',
+                answer: '네, 최근 복귀하셔서 경계 지역 순찰 업무를 다시 맡으신 것으로 압니다.',
+                reactions: [ { author: '시청자22', text: '그런 사람을 다시 현장에 투입한다고?' }, { author: '시청자65', text: '불안하다...' } ]
+            }
+        },
+        ren: {
+            answer: '렌 부사관님 말씀이시군요! 엄청 까다로워 보여도 사실 정이 많으신 분이랍니다.',
+            reactions: [ { author: '시청자33', text: '오ㄷㄷㄷ' }, { author: '시청자918', text: '그분이랑 같이 순찰 돌고 싶다' } ],
+            followUp: {
+                question: '신입한테 독설 날리기로 유명한데요?',
+                answer: '아... 그건... 실력 없는 사람에게는 특히 더 엄격하신 편이라고 들었습니다. 살아남으려면 어쩔 수 없으니까요.',
+                reactions: [ { author: '시청자78', text: '역시 빡센 사람이었네' } ]
+            }
+        }
+    };
+    
+    function addChatMessage(author, text, authorClass = '') {
+        const li = document.createElement('li');
+        li.className = 'chat-item';
+        li.innerHTML = `<span class="author ${authorClass}">${author}:</span><span class="text"> ${text}</span>`;
+        chatLog.appendChild(li);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
+    
+    function addSystemMessage(text) {
+        const li = document.createElement('li');
+        li.className = 'system-message';
+        li.textContent = text;
+        chatLog.appendChild(li);
+        chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    document.querySelectorAll('.donate-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const amount = parseInt(e.target.dataset.amount);
+            let currentBerries = parseInt(localStorage.getItem('liveTvBerries') || '0');
+            
+            if (currentBerries >= amount) {
+                currentBerries -= amount;
+                localStorage.setItem('liveTvBerries', currentBerries.toString());
+                addSystemMessage(`${nickname}님이 열매 ${amount}개를 후원했습니다!`);
+                setTimeout(() => addChatMessage(streamerName, `${nickname}님, 후원 감사합니다!`, 'streamer'), 300);
+                if (amount >= 100) setTimeout(() => addChatMessage('시청자777', `와 ${amount}개! 큰손이다 ㄷㄷ`), 600);
+            } else {
+                if(confirm('보유한 열매가 부족합니다. 충전소로 이동하시겠습니까?')) {
+                    window.open('livetv-berries.html', '_blank');
+                }
+            }
+        });
+    });
+
+    function showFollowUpQuestion(questionKey) {
+        const followUpContainer = document.getElementById('follow-up-container');
+        const followUpData = streamerAnswers[questionKey].followUp;
+        if (!followUpData || followUpContainer.innerHTML !== '') return;
+
+        const followUpButton = document.createElement('button');
+        followUpButton.className = 'follow-up-btn';
+        followUpButton.textContent = followUpData.question;
+        
+        followUpButton.addEventListener('click', () => {
+            addChatMessage(nickname, followUpData.question);
+            setTimeout(() => {
+                addChatMessage(streamerName, followUpData.answer, 'streamer');
+                setTimeout(() => {
+                    followUpData.reactions.forEach(r => addChatMessage(r.author, r.text));
+                    
+                    // [신규] 모든 대화가 끝난 후, 2초 뒤에 원래 질문 목록을 다시 보여줌
+                    setTimeout(() => {
+                        document.getElementById('initial-questions').style.display = 'flex';
+                        followUpContainer.innerHTML = ''; // 추가 질문 버튼 삭제
+                    }, 2000);
+
+                }, 1500);
+            }, 1000);
+            followUpButton.remove();
+        });
+        followUpContainer.appendChild(followUpButton);
+    }
+
+    document.querySelectorAll('.question-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            document.getElementById('initial-questions').style.display = 'none';
+            document.getElementById('follow-up-container').innerHTML = '';
+            
+            const questionKey = e.target.dataset.question;
+            const questionText = e.target.textContent;
+            const responseData = streamerAnswers[questionKey];
+            
+            addChatMessage(nickname, questionText);
+            if (responseData) {
+                setTimeout(() => {
+                    addChatMessage(streamerName, responseData.answer, 'streamer');
+                    setTimeout(() => {
+                        responseData.reactions.forEach(r => addChatMessage(r.author, r.text));
+                        showFollowUpQuestion(questionKey);
+                    }, 1500);
+                }, 1000);
+            }
+        });
+    });
+
+    addChatMessage('시청자123', '면접 질문 또 뭐 있었나요?');
+    setTimeout(() => addChatMessage(streamerName, "아, 그리고 '가장 존경하는 대원이 누구인가'도 물어보셨어요.", 'streamer'), 1500);
+  </script>
+</body>
+</html>

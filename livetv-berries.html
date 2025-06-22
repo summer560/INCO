@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>열매 충전소 - LIVE TV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <style>
+    body { margin:0; background:#f0e8ff; font-family:'VT323', 'Helvetica Neue', sans-serif; color:#333; }
+    .container { max-width: 900px; margin: 0 auto; padding: 24px; }
+    a { text-decoration: none; color: inherit; }
+    header { background:#fff; border-bottom: 2px solid #000; padding: 16px 24px; }
+    .logo { font-size: 24px; font-weight:bold; }
+
+    h1 { font-size: 36px; text-align: center; margin-top: 40px; }
+
+    .shop-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; margin-top: 32px; }
+    .berry-item { background: #fff; padding: 24px; border-radius: 0; border: 2px solid #000; text-align: center; }
+    .berry-item .icon { font-size: 48px; }
+    .berry-item h3 { margin: 16px 0 8px; font-size: 24px; }
+    .berry-item .price { font-size: 18px; margin-bottom: 16px; }
+    .berry-item .bonus { color: #ff6b6b; font-weight: bold; }
+    
+    .buy-button { 
+        font-family: inherit;
+        background: #ffc2e2; 
+        color: #000; 
+        border: 2px solid #000; 
+        padding: 12px 24px; 
+        font-size: 20px;
+        font-weight: bold; 
+        cursor: pointer; 
+        margin-top: 16px; 
+        box-shadow: 4px 4px 0 #000;
+        transition: all .2s;
+    }
+    .buy-button:hover {
+        background: #a6f0c6;
+    }
+  </style>
+</head>
+<body>
+  <header><div class="logo"><a href="livetv.html" style="text-decoration:none; color:inherit;">LIVE TV</a></div></header>
+  <div class="container">
+    <h1>열매 충전소</h1>
+    <div class="shop-grid">
+      <div class="berry-item">
+        <div class="icon">🍓</div>
+        <h3>열매 100개</h3>
+        <p>1,000 DEL</p>
+        <button class="buy-button" data-berries="100">구매하기</button>
+      </div>
+      <div class="berry-item">
+        <div class="icon">🍓🍓</div>
+        <h3>열매 550개 <span class="bonus">(+10%!)</span></h3>
+        <p>5,000 DEL</p>
+        <button class="buy-button" data-berries="550">구매하기</button>
+      </div>
+      <div class="berry-item">
+        <div class="icon">🍓🍓🍓</div>
+        <h3>열매 1,150개 <span class="bonus">(+15%!)</span></h3>
+        <p>10,000 DEL</p>
+        <button class="buy-button" data-berries="1150">구매하기</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    document.querySelectorAll('.buy-button').forEach(button => {
+        button.addEventListener('click', (event) => {
+            const berriesAmount = parseInt(event.target.dataset.berries);
+            let currentBerries = parseInt(localStorage.getItem('liveTvBerries') || '0');
+            
+            currentBerries += berriesAmount;
+            localStorage.setItem('liveTvBerries', currentBerries.toString());
+
+            alert(`열매 ${berriesAmount}개 구매 완료! (현재 보유 열매: ${currentBerries.toLocaleString()})`);
+        });
+    });
+  </script>
+</body>
+</html>
