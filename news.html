@@ -59,15 +59,12 @@
         { id: 'news002', isNew: false, file: 'article_leak_report.html', headline: '감염자 치료제 3차 보고서 유출', source: '세라프 타임즈', summary: 'SDA 의학 연구 부서의 3차 치료제 임상실험 보고서가 외부로 유출된 정황이 포착되어 내부 감사에 착수했습니다.' },
         { id: 'dylan01', isNew: false, file: 'news-article-dylan.html', headline: '신도시의 비극, 그 후... 딜런 브룩스, 논란의 중심에 서다', source: '사회', summary: '개발 구역 신도시에서 발생한 대규모 감염 사태의 현장 지휘관, 딜런 브룩스를 둘러싼 논란이 계속되고 있습니다.' },
         { id: 'news005', isNew: false, file: 'article_sentient_being.html', headline: '지성체, 그것에 대한 진실은', source: '심층취재', summary: '최근 ORINET 등지에서 소문으로만 떠돌던 \'대화 가능한 지성체 크리처\'의 존재. SDA는 공식 입장을 내놓지 않고 있습니다.' }
-    ];
+      ];
 
     const ITEMS_PER_PAGE = 4;
     let currentPage = 1;
-    
-          function renderPage(page) {
-        // [수정] 함수가 호출될 때마다 localStorage에서 최신 데이터를 다시 불러옵니다.
-        const allNews = JSON.parse(localStorage.getItem('incoNews'));
-        
+
+    function renderPage(page, allNews) {
         const latestNews = allNews.filter(art => art.isNew === true);
         const pastNews = allNews.filter(art => art.isNew === false);
 
@@ -96,15 +93,15 @@
 
         const totalPages = Math.ceil(pastNews.length / ITEMS_PER_PAGE);
         if (totalPages > 1) {
-            paginationContainer.innerHTML += `<a href="#" onclick="event.preventDefault(); renderPage(1)">&laquo;</a>`;
+            paginationContainer.innerHTML += `<a href="#" onclick="event.preventDefault(); renderPage(1, JSON.parse(localStorage.getItem('incoNews')))">«</a>`;
             for (let i = 1; i <= totalPages; i++) {
                 if (i === currentPage) {
                     paginationContainer.innerHTML += `<strong>${i}</strong>`;
                 } else {
-                    paginationContainer.innerHTML += `<a href="#" onclick="event.preventDefault(); renderPage(${i})">${i}</a>`;
+                    paginationContainer.innerHTML += `<a href="#" onclick="event.preventDefault(); renderPage(${i}, JSON.parse(localStorage.getItem('incoNews')))">${i}</a>`;
                 }
             }
-            paginationContainer.innerHTML += `<a href="#" onclick="event.preventDefault(); renderPage(${totalPages})">&raquo;</a>`;
+            paginationContainer.innerHTML += `<a href="#" onclick="event.preventDefault(); renderPage(${totalPages}, JSON.parse(localStorage.getItem('incoNews')))">»</a>`;
         }
     }
 
@@ -112,8 +109,8 @@
         if (!localStorage.getItem('incoNews')) {
             localStorage.setItem('incoNews', JSON.stringify(initialNews));
         }
-        // [수정] renderPage 함수가 localStorage의 데이터를 사용할 수 있도록 수정
-        renderPage(1); 
+        const allNews = JSON.parse(localStorage.getItem('incoNews'));
+        renderPage(1, allNews); 
     };
   </script>
 </body>
