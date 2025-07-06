@@ -87,7 +87,14 @@
           </ul>
       </div>
     </div>
-
+<div class="official-warning">
+      <span class="title" style="color:#1864ab;">[SDA 공지] 경계 구역 안정화 단계 진입</span>
+      <p>
+        시민 여러분의 협조 덕분에 '이상 기후'의 원인이 되었던 위협 요소가 성공적으로 제거되었습니다.<br>
+        현재 경계 구역은 안정화 단계를 진행 중이며, 일부 구역의 통행 제한이 완화되었습니다.<br>
+        하지만, 아직 모든 위험이 사라진 것은 아니므로, SDA의 공식 지침을 계속해서 따라주시길 바랍니다.
+      </p>
+    </div>
    <div class="official-warning">
       <span class="title">[SDA 긴급 공지] 위험 구역 통제 강화 및 무단 출입 엄금</span>
       <p>
@@ -102,10 +109,10 @@
   <div id="map-tooltip" class="tooltip"></div>
 
   <script>
-    const zoneData = [
-        { id: 'zone1', name: '경계 구역 A', status: 'danger', statusText: '주민 소개령', threat: '이상 저온 현상 심화, 비지성체 크리처 활동 급증.', directive: '모든 구역민은 지정된 안전 구역으로 즉시 대피.' },
-        { id: 'zone2', name: '경계 구역 B', status: 'danger', statusText: '주민 소개령', threat: '원인 불명의 폭설로 인한 고립 위험.', directive: '모든 구역민은 지정된 안전 구역으로 즉시 대피.' },
-        { id: 'zone3', name: '경계 구역 C', status: 'warning', statusText: '대피 준비', threat: '이상 기후 확산 조짐, 이종 입자 농도 증가.', directive: 'SDA의 다음 지침에 따라 즉시 대피할 수 있도록 준비.' }
+   const zoneData = [
+        { id: 'zone1', name: '경계 구역 A', status: 'caution', statusText: '안정화 중', threat: '이상 저온 현상 소멸, 잔존 크리처 소탕 중.', directive: '필수 인원 외 출입 자제 권고.' },
+        { id: 'zone2', name: '경계 구역 B', status: 'caution', statusText: '제한적 통행', threat: '기온 정상화, 일부 구역 제설 작업 진행 중.', directive: '지정된 경로로만 통행 가능.' },
+        { id: 'zone3', name: '경계 구역 C', status: 'warning', statusText: '경고', threat: '이종 입자 농도 소폭 상승.', directive: '방호 장비 착용 필수.' }
     ];
 
     const zoneListPanel = document.getElementById('zone-list-panel');

@@ -38,6 +38,11 @@
       <h1>ORINET</h1>
       <p>보이는 것이 전부가 아니다.</p>
     </div>
+   <div style="text-align: right; margin-bottom: 16px; display:flex; gap: 12px; justify-content: flex-end;">
+        <a href="orichat.html" style="background:#4dabf7; color:#fff; padding: 10px 16px; border-radius: 6px; font-weight: bold;">ORIChat 접속</a>
+        <a href="write-post.html" style="background:#ffc107; color:#121212; padding: 10px 16px; border-radius: 6px; font-weight: bold;">글쓰기</a>
+    </div>
+
     <table class="board-table">
       <thead>
         <tr>
@@ -65,14 +70,87 @@
 
   <script>
     const initialPosts = [
-
+        { 
+            id: 17, 
+            category: '[모집]', 
+            title: '폐쇄 구역 탐사하실 분', 
+            author: 'Tracer', 
+            views: 5, 
+            isNew: true, 
+            content: "과거 개발 중이던 구역 하나가 폐쇄된 후, 현재는 위험 구역으로 분류되어 있다고 합니다. \n그런데 그곳에 아직 사람들이 살고 있다는 소문을 들었습니다. 단순한 소문인지, 혹은 SDA가 무언가 숨기는 것인지 확인해보고 싶습니다.\n\n관심 있는 분은 ORIChat ID: D7-Seeker 로 연락 바랍니다. 이 글은 24시간 후에 삭제됩니다.",
+            comments: [
+                {id: 1701, author: '물음표 살인마', text: '사람이 살고 있다고요? 크리처 소굴 아니었나요?'},
+                {id: 1702, author: '선비', text: '위험 구역은 접근하면 안 됩니다. SDA 공지 못 보셨나요? 이 글, 위험한데요.'},
+                {id: 1703, author: '모험가', text: '흥미롭네요. 지금 오리챗으로 채팅 걸면 될까요?', replies: [
+                    {id: 17031, author: 'Tracer', replyTo: '모험가', text: '네, D7-Seeker로 접속해주시면 됩니다.'}
+                ]},
+                {id: 1704, author: 'Cynic', text: 'SDA 몰래? ㅋㅋ 이거 완전 자살행위 아니냐'},
+                {id: 1705, author: '세라프의진실', text: 'SDA가 폐쇄한 곳에는 항상 무언가 비밀이 있죠. 진실을 찾으려는 용기를 응원합니다.'}
+            ] 
+        },
+        { 
+            id: 16, 
+            category: '[잡담]', 
+            title: "의학 연구 부서... 여기 괜찮은 거 맞을까...", 
+            author: '의학부신입', 
+            views: 88, 
+            isNew: true, 
+            content: "이번에 SDA 의학 연구 부서 신입으로 들어왔는데... 분위기 장난 아니네요. 다들 쉬쉬하는 분위기고, 곧 팀장님 징계받을 거라는 소문도 돌고... 저 잘 온 거 맞겠죠? 벌써부터 후회되는데 정상인가요.", 
+            comments: [
+                {id: 1601, author: '궁금함', text: '팀장 징계요? 왜요? 무슨 일 있었어요?' , replies: [
+                    {id: 16011, author: '의학부신입', replyTo: '궁금함', text: '저도 자세한 건... 다들 말을 안 해줘서 모르겠어요. 그냥 분위기가 너무 살벌해서요.'}
+                ]},
+                {id: 1602, author: '큐큐', text: '거기 원래 말 많았어요. 3차 치료제 보고서 유출 사건도 그렇고. 조용히 다니시는 게 신상에 좋을 겁니다.'}
+            ] 
+        },
+{ 
+            id: 13, 
+            category: '[잡담]', 
+            title: "날씨 드디어 정상으로 돌아왔네요!", 
+            author: '세라프주민', 
+            views: 3501, 
+            isNew: true, 
+            content: "몇주 동안 눈 오고 춥더니 드디어 날씨 풀렸네요. SDA가 이상 기후 원인이었던 '특수 개체' 처리했다던데, 진짜 다행입니다. 군인분들 고생하셨어요.", 
+          comments: [
+                {id: 1301, author: '시민1', text: '진짜 다행이다... 얼어 죽는 줄 알았네'},
+                {id: 1302, author: '냉소주의자', text: 'SDA가 영웅 만들려고 쇼하는 거 아님? ㅋㅋ', replies: [
+                    {id: 13021, author: '가다랑이포', replyTo: '냉소주의자', text: '결과적으로 해결됐으면 된 거 아닌가요? 꼭 그렇게 삐딱하게 보셔야겠어요?'},
+                    {id: 13022, author: '냉소주의자', replyTo: '가다랑이포', text: '그 \'결과\'를 위해서 민간인 몇 명이 죽었는지는 잊으셨나 봐요?'},
+                    {id: 13023, author: '주먹왕', replyTo: '냉소주의자', text: '냉소주의자님 말이 맞음. 항상 이런 식이지. 큰 사건 터뜨리고, 영웅 만들어서 시민들 시선 돌리고. 그 뒤에선 무슨 짓을 할지 모름.'}
+                ]}
+            ]
+    },
+        { 
+            id: 14, 
+            category: '[질문]', 
+            title: "이번에 표창받은 렌 부사관이라는 분", 
+            author: '궁금함', 
+            views: 1882, 
+            isNew: true, 
+            content: "SDA 브리핑 보니까 '렌 부사관'이라는 분이 이번에 특별 공로 표창 받았다던데, 이 분이 이상 기후 해결한 주역인가 봐요. 누군지 아시는 분?", 
+            comments: [
+                 {id: 1401, author: '와치', text: '전투 부서 제1팀 소속으로 알고 있습니다. 그 이상은 기밀사항일 겁니다.'}
+            ] 
+        },
+        { 
+            id: 15, 
+            category: '[토론]', 
+            title: "이번 작전에도 희생자가 나왔다는데...", 
+            author: '현실주의자', 
+            views: 924, 
+            isNew: true, 
+            content: "상황이 해결된 건 다행이지만, 이번에도 전투 부서 대원들 중에 희생자가 나왔다고 하네요. 언제까지 이런 희생을 반복해야 하는 건지...", 
+            comments: [
+                {id: 1501, author: '감자칩', text: '그래도 그들의 희생 덕분에 우리가 사는 겁니다. 잊지 맙시다.'}
+            ] 
+        },
     { 
             id: 12, 
             category: '[토론]', 
             title: '어쩌면 우리가 침략자 아닐까?', 
             author: '제린', 
             views: 312, 
-            isNew: true, 
+            isNew: false, 
             content: "요즘 계속 드는 생각인데, 우리는 '크리처로부터 인류를 지킨다'고 말하잖아요.\n\n근데 반대로 생각해보면, 원래 이 행성 '세라프'는 크리처들이 살던 곳이고, 900년 전에 우리가 갑자기 불시착해서 그들의 터전을 빼앗은 건 아닐까요?\n\nSDA는 크리처를 그냥 말살해야 할 해충처럼 취급하지만, '지성체' 소문도 그렇고... 어쩌면 그들은 그냥 자기들의 땅을 되찾으려는 걸지도 모릅니다. 우리가 그들을 '크리처'라고 부르며 괴물 취급하는 것 자체가 오만한 생각은 아니었을까요.", 
             comments: [
                 {id: 1201, author: '푸딩', text: '한 번도 그렇게 생각해본 적 없는데... 듣고 보니 틀린 말은 아니네요.'},
@@ -89,7 +167,7 @@
             title: 'SDA 전투 부서 팀장 애쉬 리드포드 과거 아냐?', 
             author: '고발자', 
             views: 25831, 
-            isNew: true, 
+            isNew: false, 
             content: "지금은 점잖은 척 다 하지만, 애쉬 리드포드 예전에 존나 문란했음. 나랑도 몇 번 잤다.", 
             comments: [
                 {id: 901, author: '무중력', text: '이거 진짜임? ㄷㄷ 증거 없으면 못 믿지'},
@@ -106,7 +184,7 @@
             title: '민간인 사망 기사에 우리 오리넷 언급됨', 
             author: '와치', 
             views: 1842, 
-            isNew: true, 
+            isNew: false, 
             content: "INCO 뉴스에 '위험 구역 무단 침입 민간인 3명 사망' 기사 떴는데, 거기서 'ORINET 커뮤니티를 통해 탐사대를 꾸려 무단으로 진입했다'고 나오네요... 이거 우리 사이트 맞죠? 이제 SDA에서 여기 감시하는 거 아닌가 모르겠네...", 
             comments: [
                 {id: 1001, author: '치타', text: '헐...'},
@@ -123,7 +201,7 @@
             title: '저번에 여기서 지성체 탐사대 모집했던 사람들 어떻게 됨??', 
             author: '세라프주민', 
             views: 1533, 
-            isNew: true, 
+            isNew: false, 
             content: "아니 잠깐만... 그럼 저번에 여기서 '지성체 탐사할 사람 구한다'고 했던 그 사람들... 진짜로 갔다가 다 죽은 거라고? 소름돋네...", 
             comments: [
                 {id: 1101, author: '생존전문가', text: '그러게 내가 가지 말라고 했잖아... SDA가 통제하는 데는 다 이유가 있는 겁니다.'},

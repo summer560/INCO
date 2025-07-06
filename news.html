@@ -50,20 +50,20 @@
   <script>
     // 1. 데이터 버전을 관리할 상수를 추가합니다.
     //    나중에 기사 내용을 업데이트할 때 이 숫자만 바꿔주면 됩니다. (예: 'ㅋ.1' -> '1.2')
-    const NEWS_DATA_VERSION = '1.4';
+    const NEWS_DATA_VERSION = '1.1';
 
-    const initialNews = [
-        { id: 'news006', isNew: true, file: 'news-article-weather.html', headline: '경계 구역, 원인 불명의 이상 기후 발생', source: 'SDA 기상 통제국', summary: '경계 구역 A-13 및 인근 구역에서 기온이 급격히 떨어지고, 산발적인 폭설이 관측되는 등 원인 불명의 이상 기후가 발생하고 있습니다.' },
-        { id: 'news007', isNew: true, file: 'news-article-control.html', headline: 'SDA, 이상 기후 관련 정보 통제 강화', source: 'INCO 통신', summary: 'SDA가 최근 발생한 이상 기후 현상에 대해 "조사 중"이라는 공식 입장 외에 모든 정보 유통을 통제하고 있어, 시민들의 불안감이 커지고 있습니다.' },
-        { id: 'news008', isNew: true, file: 'news-article-demand.html', headline: '혹한기용 방호복 수요 급증... INCO 스토어 일부 품목 품절', source: 'INCO 스토어', summary: '갑작스러운 추위에 방한 기능이 추가된 신형 방호복의 수요가 급증하여, INCO 스토어의 일부 인기 사이즈가 일시적으로 품절되었습니다.' },
-        { id: 'news009', isNew: true, file: 'news-article-civiliandeath.html', headline: '위험 구역 무단 침입 민간인 3명, 전원 사망', source: 'SDA 공식 발표', summary: '위험 구역에서 민간인들이 크리처의 습격으로 사망한 채 발견되었습니다. SDA는 이들이 ORINET을 통해 탐사대를 모집한 것으로 보고 있습니다.' },
-        { id: 'news003', isNew: false, file: 'news-article-wall.html', headline: '개발 구역 D-2 방어벽 증설 완료', source: 'SDA 개발 부서', summary: '크리처의 위협으로부터 개발 구역을 보호하기 위한 D-2 구역의 3차 방어벽 증설이 성공적으로 완료되었습니다.' },
+const initialNews = [
+        // --- [수정] 최신 뉴스 ---
+        { id: 'news010', isNew: true, file: 'news-article-victory.html', headline: "[SDA 공식 발표] 경계 구역 이상 기후, 원인 제거 완료", source: 'SDA 공식 발표', summary: "SDA는 금일 새벽, 경계 지역의 심각한 이상 기후의 원인이었던 고위험 특수 개체를 성공적으로 무력화했다고 공식 발표했습니다." },
+        { id: 'news011', isNew: false, file: 'news-article-analysis.html', headline: "이상 기후, 특수 개체의 에너지 파동이 원인으로 밝혀져", source: 'SDA 과학 기술부', summary: "SDA 과학 기술부는 경계 구역을 덮쳤던 이상 한파의 원인이, 특정 개체가 방출하는 강력한 저주파 에너지 파동 때문이었던 것으로 잠정 결론 내렸습니다." },
+        { id: 'news009', isNew: false, file: 'news-article-civiliandeath.html', headline: '위험 구역 무단 침입 민간인 3명, 전원 사망', source: 'SDA 공식 발표', summary: '경계 구역 A-13에서 민간인 3명이 크리처의 습격으로 사망한 채 발견되었습니다. SDA는 이들이 ORINET을 통해 탐사대를 모집한 것으로 보고 있습니다.'},
+        { id: 'news008', isNew: false, file: 'news-article-demand.html', headline: '혹한기용 방호복 수요 급증... INCO 스토어 일부 품목 품절', source: 'INCO 스토어', summary: '갑작스러운 추위에 방한 기능이 추가된 신형 방호복의 수요가 급증하여, INCO 스토어의 일부 인기 사이즈가 일시적으로 품절되었습니다.' },
+        { id: 'news006', isNew: false, file: 'news-article-weather.html', headline: '경계 지역, 원인 불명의 이상 기후 발생', source: 'SDA 기상 통제국', summary: '경계 지역 A-13 및 인근 구역에서 기온이 급격히 떨어지고, 산발적인 폭설이 관측되는 등 원인 불명의 이상 기후가 발생하고 있습니다.' },
+        { id: 'news001', isNew: false, file: 'news-article-rescue.html', headline: '경계 지역 생존자 구조 작전 재개', source: 'SDA 공식 발표', summary: 'SDA는 금일 오전, 위험 구역 A-13 인근에서 중단되었던 민간인 구조 작전을 2일 만에 재개한다고 발표했습니다.' },
         { id: 'news004', isNew: false, file: 'news-article-agentB.html', headline: '실종 조사원 B, 생존 상태로 확인', source: 'INCO 통신', summary: '지난 4일간 연락이 두절되었던 베테랑 조사원 B씨가 경계 지역 동굴에서 생존 상태로 발견되어 구조되었습니다.' },
-        { id: 'news002', isNew: false, file: 'article_leak_report.html', headline: '감염자 치료제 3차 보고서 유출', source: '세라프 타임즈', summary: 'SDA 의학 연구 부서의 3차 치료제 임상실험 보고서가 외부로 유출된 정황이 포착되어 내부 감사에 착수했습니다.' },
         { id: 'dylan01', isNew: false, file: 'news-article-dylan.html', headline: '신도시의 비극, 그 후... 딜런 브룩스, 논란의 중심에 서다', source: '사회', summary: '개발 구역 신도시에서 발생한 대규모 감염 사태의 현장 지휘관, 딜런 브룩스를 둘러싼 논란이 계속되고 있습니다.' },
         { id: 'news005', isNew: false, file: 'article_sentient_being.html', headline: '지성체, 그것에 대한 진실은', source: '심층취재', summary: '최근 ORINET 등지에서 소문으로만 떠돌던 \'대화 가능한 지성체 크리처\'의 존재. SDA는 공식 입장을 내놓지 않고 있습니다.' }
-      ];
-
+    ];
     const ITEMS_PER_PAGE = 4;
     let currentPage = 1;
 
