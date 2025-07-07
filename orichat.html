@@ -2,14 +2,14 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ORIChat</title>
   <style>
     body { margin:0; background:#121212; font-family:'Helvetica Neue', sans-serif; color:#e0e0e0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
     header { background:#202124; font-size:24px; font-weight:bold; flex-shrink: 0; }
     header a { display: block; padding: 16px 24px; color:#fff; text-decoration: none; }
-    .messenger-container { display: flex; flex-grow: 1; }
+    .messenger-container { display: flex; flex-grow: 1; min-height: 0; }
 
-    /* 사이드바 (친구 목록) */
     .sidebar { width: 280px; background: #1e1e1e; border-right: 1px solid #333; display: flex; flex-direction: column; }
     .sidebar-header { padding: 16px; border-bottom: 1px solid #333; }
     .sidebar-header h2 { margin: 0; font-size: 18px; }
@@ -18,20 +18,27 @@
     .friend-item:hover, .friend-item.active { background: #2c2c2c; }
     .add-friend-btn { display: block; width: calc(100% - 32px); margin: 16px; background: #ffc107; color: #121212; border: none; font-weight: bold; padding: 12px; border-radius: 6px; cursor: pointer; }
 
-    /* 메인 채팅 영역 */
     .chat-main { flex-grow: 1; display: flex; flex-direction: column; }
-    .chat-header { background: #1e1e1e; padding: 16px; font-size: 18px; font-weight: bold; border-bottom: 1px solid #333; }
+    .chat-header { background: #1e1e1e; padding: 16px; font-size: 18px; font-weight: bold; border-bottom: 1px solid #333; text-align: center; }
     .messages { flex-grow: 1; padding: 20px; overflow-y: auto; }
-    .message { margin-bottom: 16px; max-width: 80%; }
-    .message .author { font-weight: bold; color: #ffc107; display: block; margin-bottom: 4px; }
-    .my-message { align-self: flex-end; text-align: right; }
+    .message { margin-bottom: 16px; max-width: 80%; display: flex; flex-direction: column; }
+    .message .author { font-weight: bold; color: #ffc107; margin-bottom: 4px; }
+    .my-message { align-self: flex-end; align-items: flex-end; }
     .my-message .author { color: #4dabf7; }
     .system-message { font-style: italic; color: #868e96; text-align: center; margin: 12px 0; }
-    .input-area { padding: 16px; background: #1e1e1e; border-top: 1px solid #333; }
+    
+    /* [수정] 입력창/선택지 영역 하단 고정 */
+    .input-area { padding: 16px; background: #1e1e1e; border-top: 1px solid #333; flex-shrink: 0; }
     .question-buttons { display: flex; flex-direction: column; gap: 10px; }
     .question-btn { background: #3a3a3a; color: #e0e0e0; border: 1px solid #555; text-align: left; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 14px; }
     .question-btn:hover { background: #4a4a4a; }
     .question-btn:disabled { background: #2a2a2a; color: #666; cursor: not-allowed; }
+
+    /* [신규] 모바일 화면 스타일 */
+    @media (max-width: 768px) {
+        .sidebar { display: none; }
+        .chat-header { border-left: none; }
+    }
   </style>
 </head>
 <body>
@@ -45,8 +52,7 @@
     <main class="chat-main">
       <div class="chat-header" id="chat-header">대화 상대를 선택하세요</div>
       <div class="messages" id="chat-messages"></div>
-      <div class="input-area" id="input-area">
-        </div>
+      <div class="input-area" id="input-area"></div>
     </main>
   </div>
 
