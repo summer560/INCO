@@ -4,19 +4,23 @@
   <meta charset="UTF-8">
   <title>SDA INTERNAL NETWORK</title>
   <style>
+    /* --- 기본 스타일 --- */
     body { margin: 0; font-family: 'Helvetica Neue', sans-serif; background-color: #161a23; color: #e0e0e0; }
     .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
     a { text-decoration: none; color: #4dabf7; }
     header { background-color: #0d1117; padding: 16px 24px; font-size: 24px; font-weight: bold; color: #00a8ff; border-bottom: 1px solid #30363d; }
     
+    /* --- 로그인 페이지 --- */
     .login-gate { display: flex; justify-content: center; align-items: center; min-height: 80vh; }
     .login-box { background-color: #1e2430; padding: 40px; border-radius: 8px; text-align: center; width: 380px; border: 1px solid #30363d; }
     .login-box h1 { font-size: 22px; color: #00a8ff; margin: 0 0 8px; letter-spacing: 2px; }
     .login-box p { color: #8892b0; font-size: 14px; margin-bottom: 24px; }
     .login-box input, .login-box select { width: 100%; box-sizing: border-box; padding: 14px; margin-bottom: 12px; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; color: #e0e0e0; font-size: 15px; }
     .login-box select { text-align-last: center; }
-    .login-box button { width: 100%; padding: 14px; background: #00a8ff; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; }
-    
+    .login-box button { width: 100%; padding: 14px; background: #00a8ff; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; transition: background-color 0.2s; }
+    .login-box button:hover { background-color: #007bff; }
+
+    /* --- 내부 포털 --- */
     #internal-portal-content { display: none; }
     .welcome-message { font-size: 28px; margin-bottom: 32px; font-weight: 300; }
     .welcome-message strong { color: #00a8ff; font-weight: 600; }
@@ -33,6 +37,64 @@
     .task-widget .progress-bar { width: 0; height: 10px; background-color: #00a8ff; transition: width 0.5s ease; }
     .task-widget .complete-btn { display: block; width: 100%; margin-top: 10px; background: #30363d; border: none; color: #e0e0e0; padding: 8px; border-radius: 4px; cursor: pointer; }
     .task-widget .complete-btn.completed { background: #00a8ff; color: #fff; cursor: default; }
+
+    /* --- [신규] 바로가기 위젯 스타일 --- */
+    .quick-access-btn {
+        display: block; width: 100%; text-align: left;
+        background-color: #2a2f3b; padding: 14px; border-radius: 4px;
+        margin-bottom: 10px; color: #e0e0e0; border: none; cursor: pointer;
+        font-size: 15px; font-family: inherit;
+    }
+    .quick-access-btn:hover { background-color: #30363d; }
+
+    /* --- [신규] 채팅 모달 스타일 (SDA 테마 적용) --- */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000; }
+    .modal-overlay.active { display: flex; }
+    .chat-window { width: 100%; max-width: 800px; height: 90%; max-height: 700px; background: #161a23; border-radius: 16px; display: flex; overflow: hidden; border: 1px solid #30363d; }
+    
+    .sidebar { width: 240px; background: #0d1117; border-right: 1px solid #30363d; display: flex; flex-direction: column; }
+    .sidebar-header { padding: 16px; border-bottom: 1px solid #30363d; }
+    .sidebar-header h2 { margin: 0; font-size: 18px; color: #00a8ff; }
+    .friend-list { list-style: none; padding: 8px 0; margin: 0; overflow-y: auto; flex-grow: 1; }
+    .friend-item { padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #1e2430; font-size: 15px; }
+    .friend-item:hover, .friend-item.active { background: #1e2430; }
+    
+    .chat-main { flex-grow: 1; display: flex; flex-direction: column; }
+    .chat-header { background: #0d1117; padding: 16px; font-size: 18px; font-weight: bold; border-bottom: 1px solid #30363d; text-align: center; position: relative; }
+    .close-btn { position: absolute; top: 50%; right: 16px; transform: translateY(-50%); background: none; border: none; color: #8892b0; font-size: 24px; cursor: pointer; }
+    
+    .messages { flex-grow: 1; padding: 20px; overflow-y: auto; }
+    .message-row { display: flex; flex-direction: column; margin-bottom: 16px; }
+    .author { font-weight: bold; margin-bottom: 6px; font-size: 14px; }
+    .message-bubble { max-width: 75%; padding: 10px 14px; border-radius: 18px; line-height: 1.5; font-size: 15px; word-wrap: break-word; }
+    
+    .other-message .author { color: #00a8ff; }
+    .other-message .message-bubble { background-color: #1e2430; }
+
+    .my-message { align-items: flex-end; }
+    .my-message .author { color: #8892b0; }
+    .my-message .message-bubble { background-color: #005f8b; color: #fff; }
+    
+    .input-area { padding: 16px; background: #0d1117; border-top: 1px solid #30363d; }
+    .input-form { display: flex; }
+    .input-form input { flex-grow: 1; background: #1e2430; border: 1px solid #30363d; border-radius: 20px; color: #fff; padding: 10px 16px; font-size: 15px; }
+    .input-form button { background: #00a8ff; color: #fff; border: none; font-weight: bold; padding: 10px 20px; margin-left: 10px; border-radius: 20px; cursor: pointer; transition: background-color 0.2s; }
+    .input-form button:hover { background-color: #007bff; }
+
+    .typing-indicator span {
+        display: inline-block; width: 6px; height: 6px;
+        background-color: #8892b0; border-radius: 50%;
+        margin: 0 2px; animation: typing-bounce 1.2s infinite ease-in-out;
+        vertical-align: middle;
+    }
+    .typing-indicator span:nth-of-type(1) { animation-delay: -0.24s; }
+    .typing-indicator span:nth-of-type(2) { animation-delay: -0.12s; }
+    .typing-indicator span:nth-of-type(3) { animation-delay: 0s; }
+
+    @keyframes typing-bounce {
+      0%, 80%, 100% { transform: scale(0); }
+      40% { transform: scale(1.0); }
+    }
   </style>
 </head>
 <body>
@@ -80,11 +142,16 @@
         </div>
         <div class="main-content">
           <div class="widget">
+            <h2>바로가기</h2>
+            <button class="quick-access-btn" id="open-messenger-btn">내부 메신저 실행</button>
+          </div>
+          <div class="widget">
             <h2>내부 공지</h2>
             <ul>
               <li>• [보안] 3급 이상 기밀 문서 열람 시, 2단계 인증 프로토콜 의무화</li>
               <li>• [복지] 안전 구역 A-3 구역 신규 식당 개점 안내</li>
               <li>• [인사] 25-2차 정기 승급 심사 결과 발표</li>
+              <li>• [긴급] 경계 구역 B-7 구역, 특수 개체 출현으로 인한 일시 폐쇄</li>
             </ul>
           </div>
         </div>
@@ -92,7 +159,24 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="chat-modal">
+    <div class="chat-window">
+      <aside class="sidebar">
+        <div class="sidebar-header"><h2>내부 메신저</h2></div>
+        <ul class="friend-list" id="friend-list"></ul>
+      </aside>
+      <main class="chat-main">
+        <div class="chat-header">
+          <span id="chat-header-title">대화 상대를 선택하세요</span>
+          <button class="close-btn" id="close-chat-btn">&times;</button>
+        </div>
+        <div class="messages" id="chat-messages"></div>
+        <div class="input-area" id="input-area"></div>
+      </main>
+    </div>
+  </div>
   <script>
+    // --- 기본 포털 스크립트 ---
     const loginGate = document.getElementById('login-gate');
     const internalPortal = document.getElementById('internal-portal-content');
     const loginForm = document.getElementById('login-form');
@@ -142,7 +226,7 @@
         const password = document.getElementById('password').value;
 
         if (name && dept && code && password) {
-            assignedTasks = departmentTasks[dept] || []; // 여기서 선택한 부서에 맞는 업무 할당
+            assignedTasks = departmentTasks[dept] || [];
             loginGate.style.display = 'none';
             internalPortal.style.display = 'block';
             
@@ -156,6 +240,136 @@
             alert('모든 항목을 입력해주십시오.');
         }
     });
+
+    // --- [신규] 내부 메신저 기능 ---
+    const chatModal = document.getElementById('chat-modal');
+    const openChatBtn = document.getElementById('open-messenger-btn');
+    const closeChatBtn = document.getElementById('close-chat-btn');
+    const friendListEl = document.getElementById('friend-list');
+    const chatHeaderEl = document.getElementById('chat-header-title');
+    const messagesContainer = document.getElementById('chat-messages');
+    const inputArea = document.getElementById('input-area');
+    const myNickname = "나"; // 내부망이므로 '나'로 고정
+    
+    let friends = [
+        {id: 'Ash Ridford', name: '애쉬 리드포드'},
+        {id: 'Dylan Brooks', name: '딜런 브룩스'},
+        {id: 'Ren', name: '렌'},
+        {id: 'Johann', name: '요한'}
+    ];
+    let activeChat = null;
+    let chatHistories = JSON.parse(localStorage.getItem('sdaChatHistories')) || {};
+    let replyTrackers = {}; // 각 상대방의 답장 횟수 추적
+
+    openChatBtn.addEventListener('click', () => {
+        chatModal.classList.add('active');
+        // 메신저를 처음 열었을 때, 첫 번째 친구와의 대화를 시작
+        if (!activeChat && friends.length > 0) {
+            startChat(friends[0]);
+        }
+    });
+    closeChatBtn.addEventListener('click', () => chatModal.classList.remove('active'));
+    chatModal.addEventListener('click', (event) => {
+        if (event.target === chatModal) chatModal.classList.remove('active');
+    });
+
+    function addMessage(author, text, isMine = false, save = true) {
+        const row = document.createElement('div');
+        row.className = 'message-row' + (isMine ? ' my-message' : ' other-message');
+        const authorHTML = `<div class="author">${author}</div>`;
+        row.innerHTML = `<div class="message-bubble">${isMine ? '' : authorHTML}${text}</div>`;
+        messagesContainer.appendChild(row);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+        if (save && activeChat) {
+            if (!chatHistories[activeChat]) chatHistories[activeChat] = [];
+            chatHistories[activeChat].push({ author, text, isMine });
+            localStorage.setItem('sdaChatHistories', JSON.stringify(chatHistories));
+        }
+    }
+
+    function showTypingIndicator(author, callback) {
+        const typingId = 'typing-indicator-temp';
+        const indicatorHTML = `<div id="${typingId}" style="display: flex; align-items: center;">메시지 입력 중<span class="typing-indicator" style="margin-left: 8px;"><span></span><span></span><span></span></span></div>`;
+        addMessage(author, indicatorHTML, false, false);
+        
+        setTimeout(() => {
+            const indicator = document.getElementById(typingId);
+            if (indicator) indicator.closest('.message-row').remove();
+            callback();
+        }, 1500); // 응답 속도를 1.5초로 조정
+    }
+
+    function renderTextInput() {
+        inputArea.innerHTML = `<form class="input-form" id="chat-form"><input type="text" id="chat-input" placeholder="메시지 입력..." autocomplete="off"><button type="submit">전송</button></form>`;
+        document.getElementById('chat-form').addEventListener('submit', handleTextInput);
+    }
+
+    function handleTextInput(e) {
+        e.preventDefault();
+        const chatInput = document.getElementById('chat-input');
+        const messageText = chatInput.value.trim();
+        if (messageText) {
+            addMessage(myNickname, messageText, true);
+            chatInput.value = '';
+            
+            // 상대방의 자동 응답 로직
+            if (!replyTrackers[activeChat]) replyTrackers[activeChat] = 0;
+            replyTrackers[activeChat]++;
+            
+            let replyText = '';
+            switch(activeChat) {
+                case 'Ash Ridford':
+                    replyText = replyTrackers[activeChat] === 1 ? '무슨 일이시죠? 용건만 간단히.' : '보고할 내용이 있다면 서면으로 제출 부탁드립니다.';
+                    break;
+                case 'Dylan Brooks':
+                    replyText = replyTrackers[activeChat] === 1 ? 'ㅎo' : '바빠서 나중에 대화하자.';
+                    break;
+                case 'Ren':
+                    replyText = replyTrackers[activeChat] === 1 ? '자동 메세지: 휴가 중이므로 나중에 연락 바랍니다.' : '자동 메세지: 지금은 문자를 확인할 수 없습니다.  ';
+                    break;
+
+                case 'Johann':
+                    replyText = replyTrackers[activeChat] === 1 ? '?' : '배고픕니다.';
+                    break;
+            }
+            if (replyText) {
+                const currentChatPartner = friends.find(f => f.id === activeChat);
+                if (currentChatPartner) {
+                     showTypingIndicator(currentChatPartner.name, () => addMessage(currentChatPartner.name, replyText));
+                }
+            }
+        }
+    }
+
+    function startChat(friend) {
+        activeChat = friend.id;
+        chatHeaderEl.textContent = `${friend.name}님과의 대화`;
+        messagesContainer.innerHTML = '';
+        inputArea.innerHTML = '';
+
+        if (chatHistories[activeChat]) {
+            chatHistories[activeChat].forEach(msg => addMessage(msg.author, msg.text, msg.isMine, false));
+        }
+
+        renderTextInput();
+        renderFriendList();
+    }
+
+    function renderFriendList() {
+        friendListEl.innerHTML = '';
+        friends.forEach(friend => {
+            const li = document.createElement('li');
+            li.className = 'friend-item';
+            li.textContent = friend.name;
+            if (activeChat === friend.id) li.classList.add('active');
+            li.addEventListener('click', () => startChat(friend));
+            friendListEl.appendChild(li);
+        });
+    }
+
+    // 초기 실행
+    renderFriendList();
   </script>
 </body>
 </html>

@@ -68,8 +68,34 @@
     .question-btn { background: #3a3a3a; color: #e0e0e0; border: 1px solid #555; text-align: left; padding: 12px; border-radius: 6px; cursor: pointer; font-size: 14px; }
     .question-btn:hover { background: #4a4a4a; }
     .question-btn:disabled { background: #2a2a2a; color: #666; cursor: not-allowed; }
+
+       .typing-indicator span {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background-color: #868e96;
+        border-radius: 50%;
+        margin: 0 2px;
+        animation: typing-bounce 1.2s infinite ease-in-out;
+        vertical-align: middle;
+    }
+    .typing-indicator span:nth-of-type(1) { animation-delay: -0.24s; }
+    .typing-indicator span:nth-of-type(2) { animation-delay: -0.12s; }
+    .typing-indicator span:nth-of-type(3) { animation-delay: 0s; }
+
+    @keyframes typing-bounce {
+      0%, 80%, 100% {
+        transform: scale(0);
+      }
+      40% {
+        transform: scale(1.0);
+      }
+    }
+    /* ▲▲▲▲▲▲▲▲▲▲▲▲▲ [여기까지] ▲▲▲▲▲▲▲▲▲▲▲▲▲ */
+
   </style>
 </head>
+
 <body>
   <header><a href="main.html">INCO</a></header>
   <div class="container">
@@ -118,6 +144,20 @@
 
   <script>
     const initialPosts = [
+    { 
+            id: 18, 
+            category: '[저격]', 
+            title: '폐쇄 구역 탐사 모집 글쓴이한테 할 말 있음', 
+            author: '리얼', 
+            views: 418, 
+            isNew: true, 
+            content: "모두가 보도록 이 글을 씁니다. 지금 탐사대원을 모집하는 Tracer라는 사람, 저 사람 말 믿지 마십시오.\n\n저 구역에 사람이 살고 있다는 건 말이 안 됩니다. 그곳이 왜 폐쇄되었는지, 진짜 진실을 알고 싶다면 저에게 연락하세요.\n\nORIChat ID: The_Truth", 
+            comments: [
+                {id: 1801, author: '팝콘각', text: '오 제대로 싸움 붙었네 ㄷㄷ'},
+                {id: 1802, author: '챰챰', text: '이런 식의 공개적인 저격은 분란을 조장할 수 있습니다. 자제해주시죠.'},
+                {id: 1803, author: 'Tracer', text: '아무것도 모르는 건 당신입니다. 어리석은 사람.'}
+            ] 
+        },
         { 
             id: 17, 
             category: '[모집]', 
@@ -483,6 +523,108 @@
         when: { q: "출발 날짜가 언제죠?", a: "정해지면 따로 알려드리겠습니다." }
     };
 
+     // "The_Truth"와의 대화 내용 및 상태를 관리하는 객체
+    const theTruthDialogueData = {
+        intro: '너도 진실을 알러 온 거냐?',
+        q1: '폐쇄된 구역에 대해 아세요?',
+        a1: 'Tracer가 탐사하려는 S-00 지대 말인가. 내가 알기로 그곳은 150년 전에 폐쇄되었어. 사람이 살고 있다는 소문? 150년 동안이나 외부와 단절된 채로 발각되지 않고 살아남는 게, 상식적으로 말이 된다고 생각해?',
+        q2a: '살 수도 있죠.',
+        q2b: '당신이 그걸 어떻게 알아요?',
+        a2a_block: '...더는 할 말이 없군. 대화가 통하지 않는 사람과는 이야기하고 싶지 않다.',
+        a2b_reveal: 'SDA 개발 구역에서 근무했었다. 과거 기록을 열람하던 중 우연히 그곳에 대한 자료를 봤지. 본래 S-00 지대는 최우선 안전 구역으로 개발되던 곳이었지만, 갑자기 나타난 특수 크리처들에게 점령당하면서 수많은 사상자가 발생했다. 결국 SDA는 복구를 포기하고 영구 폐쇄를 결정했어. 그런 곳에 사람이 멀쩡히 살고 있다는 건 절대 있을 수 없는 일이야.'
+    };
+
+    // "The_Truth"와의 채팅 상태를 렌더링하는 함수
+    function renderTheTruthChat() {
+        inputArea.innerHTML = ''; // 입력창 초기화
+        const history = chatHistories['The_Truth'] || [];
+        const lastMessage = history.length > 0 ? history[history.length - 1] : null;
+
+        // 사용자가 차단되었는지 확인
+        if (localStorage.getItem('theTruthBlocked') === 'true') {
+            inputArea.innerHTML = '<p style="text-align:center; color:#868e96;">이 대화는 차단되었습니다.</p>';
+            return;
+        }
+
+        // 대화 흐름에 따라 다른 버튼을 보여줌
+        if (!lastMessage || lastMessage.text === theTruthDialogueData.intro) {
+            // [선택지 1] "폐쇄된 구역에 대해 아세요?"
+            const button = createQuestionButton(theTruthDialogueData.q1, handleTruthQuestion1);
+            inputArea.appendChild(button);
+        } else if (lastMessage.text === theTruthDialogueData.a1) {
+            // [선택지 2] "살 수도 있죠" vs "당신이 그걸 어떻게 알아요?"
+            const button2a = createQuestionButton(theTruthDialogueData.q2a, handleTruthQuestion2a);
+            const button2b = createQuestionButton(theTruthDialogueData.q2b, handleTruthQuestion2b);
+            inputArea.appendChild(button2a);
+            inputArea.appendChild(button2b);
+        }
+    }
+
+    // 질문 버튼을 생성하는 헬퍼 함수
+    function createQuestionButton(text, eventHandler) {
+        const button = document.createElement('button');
+        button.className = 'question-btn';
+        button.textContent = text;
+        button.addEventListener('click', eventHandler);
+        return button;
+    }
+
+    // [핸들러 1] "폐쇄된 구역에 대해 아세요?" 클릭 시
+    function handleTruthQuestion1(event) {
+        event.target.disabled = true;
+        addMessage(myNickname, theTruthDialogueData.q1, true);
+
+        // 3초 타이핑 애니메이션(처럼 보이는 효과) 후 답변
+        showTypingIndicator('The_Truth', () => {
+            addMessage('The_Truth', theTruthDialogueData.a1);
+            renderTheTruthChat(); // 다음 선택지 렌더링
+        });
+    }
+    
+    // [핸들러 2-a] "살 수도 있죠" 클릭 시 (차단)
+    function handleTruthQuestion2a(event) {
+        event.target.parentElement.querySelectorAll('.question-btn').forEach(b => b.disabled = true);
+        addMessage(myNickname, theTruthDialogueData.q2a, true);
+        setTimeout(() => {
+            addMessage('The_Truth', theTruthDialogueData.a2a_block);
+            localStorage.setItem('theTruthBlocked', 'true'); // 차단 상태 저장
+            renderTheTruthChat(); // 차단 메시지 표시
+        }, 1000);
+    }
+    
+    // [핸들러 2-b] "당신이 그걸 어떻게 알아요?" 클릭 시
+    function handleTruthQuestion2b(event) {
+        event.target.parentElement.querySelectorAll('.question-btn').forEach(b => b.disabled = true);
+        addMessage(myNickname, theTruthDialogueData.q2b, true);
+        showTypingIndicator('The_Truth', () => {
+            addMessage('The_Truth', theTruthDialogueData.a2b_reveal);
+        });
+    }
+
+    // 타이핑 중... 효과를 보여주는 함수
+    function showTypingIndicator(author, callback) {
+        const typingId = 'typing-indicator-temp';
+       // '입력 중' 메시지를 애니메이션과 함께 표시 (기록 X)
+    const indicatorHTML = `
+      <div id="${typingId}" style="display: flex; align-items: center;">
+        메시지를 입력 중입니다
+        <span class="typing-indicator" style="margin-left: 8px;">
+          <span></span><span></span><span></span>
+        </span>
+      </div>
+    `;
+    addMessage(author, indicatorHTML, false, false);
+        
+        setTimeout(() => {
+            const indicator = document.getElementById(typingId);
+            if (indicator) {
+                // '입력 중' 메시지 삭제
+                indicator.closest('.message-row').remove();
+            }
+            callback(); // 실제 답변 메시지 표시
+        }, 3000); // 3초 지연
+    }
+
     openChatBtn.addEventListener('click', () => chatModal.classList.add('active'));
     closeChatBtn.addEventListener('click', () => chatModal.classList.remove('active'));
     chatModal.addEventListener('click', (event) => {
@@ -512,20 +654,31 @@
     }
 
     function handleTextInput(e) {
-        e.preventDefault();
-        const chatInput = document.getElementById('chat-input');
-        const messageText = chatInput.value.trim();
-        if (messageText) {
-            addMessage(myNickname, messageText, true);
-            chatInput.value = '';
-            if (activeChat === '서머') {
-                summerReplyCount++;
-                if (summerReplyCount === 1) setTimeout(() => addMessage('서머', '여기까지 오셔서 채팅을 보내셨다면 저녁 메뉴를 추천 부탁드릴게요.'), 1000);
-                else if (summerReplyCount === 2) setTimeout(() => addMessage('서머', '또 보내셔도 이제 답장 안 와용.'), 1000);
+    e.preventDefault();
+    const chatInput = document.getElementById('chat-input');
+    const messageText = chatInput.value.trim();
+    if (messageText) {
+        addMessage(myNickname, messageText, true);
+        chatInput.value = '';
+
+        // ▼▼▼▼▼▼▼▼▼▼▼▼▼ [이 부분이 수정되었습니다] ▼▼▼▼▼▼▼▼▼▼▼▼▼
+        if (activeChat === '서머') {
+            summerReplyCount++;
+            if (summerReplyCount === 1) {
+                // 1초 지연 후 메시지를 보내는 대신, 타이핑 애니메이션 함수 호출
+                showTypingIndicator('서머', () => {
+                    addMessage('서머', '여기까지 오셔서 채팅을 보내셨다면 저녁 메뉴를 추천 부탁드릴게요.');
+                });
+            } else if (summerReplyCount === 2) {
+                // 두 번째 메시지에도 동일하게 적용
+                showTypingIndicator('서머', () => {
+                    addMessage('서머', '또 보내셔도 이제 답장 안 와용.');
+                });
             }
         }
+        // ▲▲▲▲▲▲▲▲▲▲▲▲▲ [여기까지] ▲▲▲▲▲▲▲▲▲▲▲▲▲
     }
-
+}
     function renderQuestionButtons() {
         const questionButtonsContainer = document.createElement('div');
         questionButtonsContainer.className = 'question-buttons';
@@ -548,10 +701,11 @@
         event.target.disabled = true;
     }
 
+    // [교체] 아래의 수정된 startChat 함수로 덮어쓰기
     function startChat(friend) {
         activeChat = friend.id;
         chatHeaderEl.textContent = `${friend.name}님과의 대화`;
-        messagesContainer.innerHTML = ''; 
+        messagesContainer.innerHTML = '';
         inputArea.innerHTML = '';
 
         // 저장된 대화 기록 불러오기
@@ -559,20 +713,27 @@
             chatHistories[activeChat].forEach(msg => addMessage(msg.author, msg.text, msg.isMine, false));
         }
 
+        // ======== [수정된 부분] ========
         if (friend.id === 'D7-Seeker') {
             if (!chatHistories[activeChat]) { // 첫 대화일 때만
-                 addMessage('D7-Seeker', '연락 확인했습니다. 무슨 일로 찾으셨죠?');
+                addMessage('D7-Seeker', '연락 확인했습니다. 무슨 일로 찾으셨죠?');
             }
             renderQuestionButtons();
+        } else if (friend.id === 'The_Truth') { // "The_Truth"에 대한 로직 추가
+            if (!chatHistories[activeChat]) { // 첫 대화일 때만
+                addMessage('The_Truth', theTruthDialogueData.intro);
+            }
+            renderTheTruthChat(); // "The_Truth" 전용 채팅 UI 렌더링
         } else {
             if (friend.id === '서머' && !chatHistories[activeChat]) {
                 summerReplyCount = 0;
             }
             renderTextInput();
         }
+        // ======== [여기까지] ========
+
         renderFriendList();
     }
-
     function renderFriendList() {
         friendListEl.innerHTML = '';
         friends.forEach(friend => {
