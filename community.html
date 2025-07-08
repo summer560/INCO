@@ -480,22 +480,38 @@
         // 6. 최종적으로 합쳐진 최신 목록을 브라우저에 다시 저장
         localStorage.setItem('orinetPosts', JSON.stringify(storedPosts));
     
-   // 7. 동기화된 데이터를 화면에 표시
+    // 7. 동기화된 데이터를 화면에 표시
     const posts = storedPosts;
     const boardBody = document.getElementById('board-body');
+    
+    // [신규] 게시판을 다시 그리는 함수
+    function renderBoard() {
+        boardBody.innerHTML = ''; // 기존 게시판 내용 초기화
+        posts.forEach(post => {
+            const newBadge = post.isNew ? `<span class="new-badge">N</span>` : '';
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${post.category}</td>
+                <td class="post-title"><a href="post-view.html?id=${post.id}">${post.title}</a>${newBadge}</td>
+                <td align="center">${post.author}</td>
+                <td align="center">${post.views}</td>
+            `;
+            boardBody.appendChild(row);
+        });
+    }
 
-    posts.forEach(post => {
-        const newBadge = post.isNew ? `<span class="new-badge">N</span>` : '';
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${post.category}</td>
-            <td class="post-title"><a href="post-view.html?id=${post.id}">${post.title}</a>${newBadge}</td>
-            <td align="center">${post.author}</td>
-            <td align="center">${post.views}</td>
-        `;
-        boardBody.appendChild(row);
-        
-    });
+    // [신규] ID로 게시글을 찾아 삭제하고 화면을 갱신하는 함수
+    function deletePostById(postId) {
+        const postIndex = posts.findIndex(p => p.id === postId);
+        if (postIndex > -1) {
+            posts.splice(postIndex, 1); // 배열에서 게시글 제거
+        }
+        localStorage.setItem('orinetPosts', JSON.stringify(posts)); // 변경사항 저장
+        renderBoard(); // 화면 다시 그리기
+    }
+
+    // 페이지 로드 시 게시판 최초 렌더링
+    renderBoard();
     // ... (기존 게시판 렌더링 스크립트 아래에 추가) ...
     // --- 채팅 모달 기능 ---
     const chatModal = document.getElementById('chat-modal');
@@ -525,14 +541,18 @@
 
      // "The_Truth"와의 대화 내용 및 상태를 관리하는 객체
     const theTruthDialogueData = {
-        intro: '너도 진실을 알러 온 거냐?',
-        q1: '폐쇄된 구역에 대해 아세요?',
-        a1: 'Tracer가 탐사하려는 S-00 지대 말인가. 내가 알기로 그곳은 250년 전에 폐쇄되었어. 사람이 살고 있다는 소문? 250년 동안이나 외부와 단절된 채로 발각되지 않고 살아남는 게, 상식적으로 말이 된다고 생각해?',
-        q2a: '살 수도 있죠.',
-        q2b: '당신이 그걸 어떻게 알아요?',
-        a2a_block: '...더는 할 말이 없군. 대화가 통하지 않는 사람과는 이야기하고 싶지 않다.',
-        a2b_reveal: 'SDA 개발 부서에서 근무했었다. 과거 기록을 열람하던 중 우연히 그곳에 대한 자료를 봤지. 본래 S-00 지대는 최우선 안전 구역으로 개발되던 곳이었지만, 갑자기 나타난 특수 크리처들에게 점령당하면서 수많은 사상자가 발생했다. 결국 SDA는 복구를 포기하고 영구 폐쇄를 결정했어. 그런 곳에 사람이 멀쩡히 살고 있다는 건 절대 있을 수 없는 일이야.'
-    };
+    intro: '너도 진실을 알러 온 거냐?',
+    q1: '폐쇄된 구역에 대해 아세요?',
+    a1: 'Tracer가 탐사하려는 S-00 지대 말인가. 내가 알기로 그곳은 250년 전에 폐쇄되었어. 250년 동안이나 외부와 단절된 채로 발각되지 않고 살아남는 게, 상식적으로 말이 된다고 생각해?',
+    q2a: '살 수도 있죠.',
+    q2b: '당신이 그걸 어떻게 알아요?',
+    a2a_block: '...더는 할 말이 없어. 대화가 통하지 않는 사람과는 이야기하고 싶지 않아.',
+    // [수정됨] 역사에 관심이 있다는 내용을 추가하여 개연성 보강
+    a2b_reveal: '원래 역사 기록을 파보는 걸 좋아해서, SDA 개발 부서에서 근무할 때 과거 기록을 열람하던 중 우연히 그곳에 대한 자료를 봤지. 본래 S-00 지대는 최우선 안전 구역으로 개발되던 곳이었지만, 갑자기 나타난 특수 크리처들에게 점령당하면서 수많은 사상자가 발생했어. 이 사건으로 전투 부서 3팀의 주요 인원들도 사망했다고 하는데...거기에 대해서는 자세히 몰라. 확실한 건, 결국 SDA는 복구를 포기하고 영구 폐쇄를 결정했어. 그런 곳에 사람이 멀쩡히 살고 있다는 건 절대 있을 수 없는 일이야.',
+    // [신규] 이벤트 연출을 위한 대사 추가
+    postDeleted_Tracer: '내가 경고했더니, 폐쇄 구역 탐사 글을 올린 녀석이 글을 지웠네.',
+    postDeleted_Self: '250년 전에 폐쇄된 지역이 지금 와서 거론되다니 기묘한 일이야 참. 그치만 여긴 이상한 글 올리는 새끼들이 많으니까 새삼스럽지도 않지. 나도 이제 내 글을 지울게. 안녕.'
+};
 
     // "The_Truth"와의 채팅 상태를 렌더링하는 함수
     function renderTheTruthChat() {
@@ -593,13 +613,40 @@
     }
     
     // [핸들러 2-b] "당신이 그걸 어떻게 알아요?" 클릭 시
-    function handleTruthQuestion2b(event) {
-        event.target.parentElement.querySelectorAll('.question-btn').forEach(b => b.disabled = true);
-        addMessage(myNickname, theTruthDialogueData.q2b, true);
-        showTypingIndicator('The_Truth', () => {
-            addMessage('The_Truth', theTruthDialogueData.a2b_reveal);
-        });
-    }
+   function handleTruthQuestion2b(event) {
+    event.target.parentElement.querySelectorAll('.question-btn').forEach(b => b.disabled = true);
+    addMessage(myNickname, theTruthDialogueData.q2b, true);
+
+    // 연쇄 이벤트를 위해 setTimeout을 단계적으로 사용
+    showTypingIndicator('The_Truth', () => {
+        // 1. 진실을 밝히는 첫 메시지 전송
+        addMessage('The_Truth', theTruthDialogueData.a2b_reveal);
+
+        // 2. 2.5초 후, Tracer가 글을 지웠다는 추가 메시지 전송
+        setTimeout(() => {
+            showTypingIndicator('The_Truth', () => {
+                addMessage('The_Truth', theTruthDialogueData.postDeleted_Tracer);
+                
+                // 3. 메시지 전송 직후 Tracer의 게시글(ID: 17) 삭제 및 게시판 새로고침
+                setTimeout(() => {
+                    deletePostById(17);
+
+                    // 4. 3초 후, 자신도 글을 지우겠다는 마지막 메시지 전송
+                    setTimeout(() => {
+                        showTypingIndicator('The_Truth', () => {
+                            addMessage('The_Truth', theTruthDialogueData.postDeleted_Self);
+                            
+                            // 5. 메시지 전송 직후 The_Truth의 게시글(ID: 18) 삭제 및 게시판 새로고침
+                            setTimeout(() => {
+                                deletePostById(18);
+                            }, 1000); // 1초 후 실행
+                        });
+                    }, 3000); // 3초 후 실행
+                }, 500); // 0.5초 후 실행
+            });
+        }, 2500); // 2.5초 후 실행
+    });
+}
 
     // 타이핑 중... 효과를 보여주는 함수
     function showTypingIndicator(author, callback) {
