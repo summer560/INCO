@@ -11,7 +11,7 @@
 
     /* --- 헤더 & 상단 메뉴 --- */
     header { background:#202124; font-size:24px; font-weight:bold; }
-header a { display: block; padding: 16px 24px; color:#fff; text-decoration: none; }
+    header a { display: block; padding: 16px 24px; color:#fff; text-decoration: none; }
     .alert-banner { background:#198754; color:#fff; text-align:center; padding:8px; font-size:14px; font-weight:bold; animation:blink 1.5s infinite; }
     @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.5;} }
     
@@ -35,12 +35,15 @@ header a { display: block; padding: 16px 24px; color:#fff; text-decoration: none
     .box h2 { font-size:18px; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #f1f3f4; display:flex; align-items:center; }
     .box h2 img { width:20px; height:20px; margin-right:8px; }
 
-    /* --- 사전예약 배너 --- */
-    .reserve-banner { padding:24px; background: linear-gradient(135deg, #1c1e21, #343a40); text-align:center; color: #fff; }
-    .reserve-banner img { width: 80%; max-width: 400px; border-radius: 12px; margin-bottom: 16px; }
-    .reserve-banner .text { font-size:18px; font-weight:bold; color:#fff; }
-    .reserve-button { margin-top:16px; padding:12px 24px; font-size:16px; font-weight:bold; color:#fff; background:linear-gradient(90deg,#007cf0,#00dfd8); border:none; border-radius:999px; cursor:pointer; transition: transform .2s; }
-    .reserve-button:hover { transform: scale(1.05); }
+    /* --- 배너 슬라이더 스타일 --- */
+    .reserve-banner { padding:0; overflow: hidden; position: relative; }
+    .slider-container { display: flex; transition: transform 0.5s ease-in-out; }
+    .slide { min-width: 100%; box-sizing: border-box; }
+    .slide img { width: 100%; display: block; object-fit: cover; } 
+    .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(0,0,0,0.4); color: white; border: none; padding: 10px 15px; font-size: 20px; border-radius: 50%; cursor: pointer; z-index: 10; opacity: 0; transition: opacity 0.3s; }
+    .reserve-banner:hover .slider-btn { opacity: 1; }
+    .slider-btn.prev { left: 15px; }
+    .slider-btn.next { right: 15px; }
 
     /* --- 인기 검색어 --- */
     .popular-searches ol { list-style:none; padding-left:0; font-size:14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 20px; margin:0;}
@@ -48,7 +51,6 @@ header a { display: block; padding: 16px 24px; color:#fff; text-decoration: none
     .popular-searches .rank { font-style:italic; font-weight:bold; color:#007bff; width:20px; }
     .popular-searches a:hover { text-decoration:underline; }
     
-    /* [수정] 빠져있던 '오늘의 추천 정보' 스타일 추가 */
     .recommend-section { margin-top: 16px; }
     .recommend-section:first-of-type { margin-top: 0; }
     .recommend-section h3 { font-size: 15px; margin: 0 0 8px; color: #007bff; }
@@ -101,12 +103,10 @@ header a { display: block; padding: 16px 24px; color:#fff; text-decoration: none
     footer { background:#dee2e6; padding:24px 0; margin-top:60px; }
     .footer-content { max-width:1280px; margin:0 auto; padding:0 24px; font-size:13px; color:#495057; display:flex; justify-content:space-between; }
      
-    /* --- [수정] SDA 바로가기 배너 스타일 --- */
-    
     .sda-widgets-group {
         display: flex;
         flex-direction: column;
-        gap: 28px; /* 이 gap이 브리핑과 바로가기 사이의 간격을 만듭니다. */
+        gap: 28px; 
     }
     .sda-shortcut {
       background: linear-gradient(135deg, #007bff, #17a2b8);
@@ -160,7 +160,6 @@ header a { display: block; padding: 16px 24px; color:#fff; text-decoration: none
       background-color: rgba(255,255,255,0.3);
     }
     
-    /* --- [신규] SDA 브리핑 위젯 스타일 --- */
     .sda-briefing-widget .briefing-list {
       list-style: none;
       padding: 0;
@@ -210,23 +209,33 @@ header a { display: block; padding: 16px 24px; color:#fff; text-decoration: none
 
     <div class="content-grid">
       <main class="main-column">
+        
         <div class="box reserve-banner">
-          <img src="images/GMAE.png" alt="프로젝트: 세라프">
-          <div class="text">차세대 행성 탐사 시뮬레이터 &lt;프로젝트: 세라프&gt; 공식 출시 예정!</div>
-          <button class="reserve-button" onclick="reserveNow()">사전예약 혜택 받기</button>
+          <div class="slider-container">
+            <div class="slide">
+              <img src="images/lovegame.jpg" alt="러브게임 배너">
+            </div>
+            <div class="slide">
+              <a href="https://ko.cvdk.io/c/lPDultTUQg6nxT3_sy_5xg?rc=Iod92jXV2a" target="_blank">
+                <img src="images/catgame.jpg" alt="캣게임 배너">
+              </a>
+            </div>
+          </div>
+          <button class="slider-btn prev">&lt;</button>
+          <button class="slider-btn next">&gt;</button>
         </div>
         
-   <div class="box popular-searches">
+       <div class="box popular-searches">
         <h2>인기 검색어</h2>
         <ol>
-          <li><a href="#"><span class="rank">1.</span> 지성체</a></li>
-          <li><a href="#"><span class="rank">2.</span> SDA 토벌 작전</a></li>
-          <li><a href="#"><span class="rank">3.</span> 경계 구역 통행 재개</a></li>
-          <li><a href="#"><span class="rank">4.</span> 이상 기후 해결</a></li>
-          <li><a href="#"><span class="rank">5.</span> 작전 전사자 추모</a></li>
-          <li><a href="#"><span class="rank">6.</span> X-27 백신 4차</a></li>
-          <li><a href="#"><span class="rank">7.</span> SDA 전투 부서 1팀</a></li>
-          <li><a href="#"><span class="rank">8.</span> SDA 공식 발표</a></li>
+          <li><a href="#"><span class="rank">1.</span> 올해 여름 관광지 코스</a></li>
+          <li><a href="#"><span class="rank">2.</span> 여름철 크리처 주의보</a></li>
+          <li><a href="#"><span class="rank">3.</span> 세라피스 급식</a></li>
+          <li><a href="#"><span class="rank">4.</span> SDA 전투 부서</a></li>
+          <li><a href="#"><span class="rank">5.</span> 신형 미스트</a></li>
+          <li><a href="#"><span class="rank">6.</span> 해양 크리처</a></li>
+          <li><a href="#"><span class="rank">7.</span> 블루코스트</a></li>
+          <li><a href="#"><span class="rank">8.</span> 여름 방학</a></li>
         </ol>
       </div>
         <div class="box">
@@ -234,15 +243,15 @@ header a { display: block; padding: 16px 24px; color:#fff; text-decoration: none
           <div class="recommend-section">
             <h3>생존 가이드</h3>
             <ul>
-              <li><a href="#">• 오염된 물을 정화하는 3가지 방법</a></li>
-              <li><a href="#">• 방호복 재질별 세척 및 관리 요령</a></li>
+              <li><a href="#">• 여름철 우기 대비, 안전 가옥 관리 요령</a></li>
+              <li><a href="#">• 고온 다습 환경에서의 방호복 착용 지침</a></li>
             </ul>
           </div>
           <div class="recommend-section">
-            <h3>간편 레시피</h3>
+            <h3>여가 정보</h3>
             <ul>
-              <li><a href="#">• 영양 페이스트, 질리지 않게 먹는 꿀팁</a></li>
-              <li><a href="#">• 통조림으로 만드는 비상 식량 레시피</a></li>
+              <li><a href="#">• SDA 추천, 안전구역 내 여름 휴양지 BEST 3</a></li>
+              <li><a href="#">• 제철 과일 야생 블루 베리 채집 및 식용법 활용법</a></li>
             </ul>
           </div>
         </div>
@@ -313,23 +322,23 @@ header a { display: block; padding: 16px 24px; color:#fff; text-decoration: none
           </div>
         <div class="sda-widgets-group">
            <div class="box sda-briefing-widget">
-        <h2>SDA 일일 브리핑</h2>
+           <h2>SDA 일일 브리핑</h2>
         <ul class="briefing-list">
           <li class="briefing-item">
-            <span class="briefing-category personnel">표창</span>
-            <a href="#">'이상 기후' 사태 해결 유공자, 렌 부사관 특별 표창</a>
+            <span class="briefing-category alert">경보</span>
+            <a href="briefing.html">동부 해안 E-7 구역, 미확인 대형 해양 크리처 출현. 인근 지역 접근을 금합니다.</a>
+          </li>
+          <li class="briefing-item">
+            <span class="briefing-category personnel">인사</span>
+            <a href="briefing.html">전투 부서 제2팀, 결원 보충을 위한 공개 채용 실시. (~10/31까지)</a>
           </li>
           <li class="briefing-item">
             <span class="briefing-category notice">공지</span>
-            <a href="#">경계 지역 A-13, 이상 기후 소멸에 따라 통행 제한 해제</a>
-          </li>
-          <li class="briefing-item">
-            <span class="briefing-category alert">경보</span>
-            <a href="#">작전 구역 내 잔존 위협 요소 소탕 진행 중. 접근 금지.</a>
+            <a href="briefing.html">안전구역 A-9 '블루코스트' 해변, 여름 시즌 동안 민간에 특별 개방.</a>
           </li>
            <li class="briefing-item">
             <span class="briefing-category notice">공지</span>
-            <a href="#">X-27 바이러스 백신 4차 접종 예약 정상 재개</a>
+            <a href="briefing.html">신형 방호복 'MARK IV' 보급 일정 안내. 각 구역별 일정 확인 요망.</a>
           </li>
         </ul>
       </div>
@@ -350,32 +359,32 @@ header a { display: block; padding: 16px 24px; color:#fff; text-decoration: none
   <div class="portal-section">
       <h2>INCO 스토어</h2>
       <div class="store-row">
-        <a href="product-detail.html" class="store-item">
-          <img src="images/pill-icon.png" alt="백신약">
+        <a href="product-mist.html" class="store-item">
+          <img src="images/mist.png" alt="쿨링 미스트">
           <div class="store-item-info">
-            <strong>R2X 백신약 (1개월분)</strong>
-            <span>SDA 의학 연구 부서 개발</span>
+            <strong>[SUMMER] 쿨링 미스트</strong>
+            <span>피부 온도 즉시 감소 및 수분 충전</span>
           </div>
         </a>
-        <a href="product-suit.html" class="store-item">
-          <img src="images/w1.png" alt="동계 방한 세트">
+        <a href="product-repellent.html" class="store-item">
+          <img src="images/ta.png" alt="소형 크리처 퇴치기">
            <div class="store-item-info">
-            <strong>[ARC-WEAR] 동계 방한 3종 세트</strong>
-            <span>혹한기 대비 신규 보급품</span>
+            <strong>소형 크리처 퇴치기</strong>
+            <span>여름철 소형 크리처로부터 안전하게 보호</span>
           </div>
         </a>
-        <a href="product-pc.html" class="store-item">
-          <img src="images/PC.png" alt="고사양 PC">
+        <a href="product-juice.html" class="store-item">
+          <img src="images/bery.png" alt="블루베리 농축 주스">
            <div class="store-item-info">
-            <strong>AI 연산 워크스테이션</strong>
-            <span>연구 및 시뮬레이션 최적화</span>
+            <strong>블루베리 농축 주스 (30개입)</strong>
+            <span>갈증 해소 및 비타민 보충</span>
           </div>
         </a>
-         <a href="product-housing.html" class="store-item">
-          <img src="images/building.png" alt="거주지">
+         <a href="product-sunglasses.html" class="store-item">
+          <img src="images/sun.png" alt="데일리 패션 선글라스">
            <div class="store-item-info">
-            <strong>안전구역 A-7 주거권</strong>
-            <span>쾌적하고 안전한 삶</span>
+            <strong>[SUMMER] 데일리 패션 선글라스</strong>
+            <span>뜨거운 태양 아래, 당신의 스타일을 완성</span>
           </div>
         </a>
       </div>
@@ -425,34 +434,49 @@ header a { display: block; padding: 16px 24px; color:#fff; text-decoration: none
     }
   }
 
-  function reserveNow() {
-    const mails = JSON.parse(localStorage.getItem('incoMails') || '[]');
-    const exists = mails.some(m => m.subject.includes('프로젝트: 세라프'));
-    if (!exists) {
-      mails.unshift({
-        subject: '[INCO] <프로젝트: 세라프> 사전예약 완료 안내',
-        preview: '차세대 행성 탐사 시뮬레이터 사전예약이 완료되었습니다.',
-        timestamp: Date.now(),
-        read: false
-      });
-      localStorage.setItem('incoMails', JSON.stringify(mails));
-      alert('사전예약이 완료되었습니다. 메일이 도착했습니다.');
-      updateBadge();
-    } else {
-      alert('이미 사전예약하셨습니다.');
-    }
-  }
-
    // 로그아웃 및 전체 초기화 기능
   const logoutButton = document.getElementById('logout-button');
   if(logoutButton) {
     logoutButton.addEventListener('click', () => {
         if (confirm("모든 활동 기록(닉네임, 메일 등)을 초기화하고 로그아웃하시겠습니까?")) {
-            // sessionStorage와 localStorage를 모두 초기화
             sessionStorage.clear();
             localStorage.clear();
             window.location.href = 'index.html';
         }
     });
   }
+
+  // 배너 슬라이더 스크립트
+  const sliderContainer = document.querySelector('.slider-container');
+  const prevBtn = document.querySelector('.slider-btn.prev');
+  const nextBtn = document.querySelector('.slider-btn.next');
+  let currentIndex = 0;
+  const slideCount = document.querySelectorAll('.slide').length;
+
+  function showSlide(index) {
+    if (sliderContainer) {
+        sliderContainer.style.transform = `translateX(-${index * 100}%)`;
+    }
+  }
+
+  if (prevBtn && nextBtn) {
+    prevBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+        showSlide(currentIndex);
+    });
+
+    nextBtn.addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % slideCount;
+        showSlide(currentIndex);
+    });
+  }
+
+  // 5초마다 자동으로 슬라이드 넘기기
+  setInterval(() => {
+    currentIndex = (currentIndex + 1) % slideCount;
+    showSlide(currentIndex);
+  }, 5000);
+
 </script>
+</body>
+</html>
